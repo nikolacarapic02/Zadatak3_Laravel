@@ -1,32 +1,33 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Group\GroupController;
+use App\Http\Controllers\Intern\InternController;
+use App\Http\Controllers\Mentor\MentorController;
+use App\Http\Controllers\Review\ReviewController;
+use App\Http\Controllers\Group\GroupInternController;
+use App\Http\Controllers\Group\GroupMentorController;
+use App\Http\Controllers\Intern\InternGroupController;
+use App\Http\Controllers\Mentor\MentorGroupController;
+use App\Http\Controllers\Intern\InternMentorController;
+use App\Http\Controllers\Intern\InternReviewController;
+use App\Http\Controllers\Mentor\MentorInternController;
+use App\Http\Controllers\Mentor\MentorReviewController;
+use App\Http\Controllers\Review\ReviewInternController;
+use App\Http\Controllers\Review\ReviewMentorController;
 use App\Http\Controllers\Assignment\AssignmentController;
+use App\Http\Controllers\Group\GroupAssignmentController;
+use App\Http\Controllers\Intern\InternAssignmentController;
+use App\Http\Controllers\Mentor\MentorAssignmentController;
+use App\Http\Controllers\Review\ReviewAssignmentController;
+use Laravel\Passport\Http\Controllers\AccessTokenController;
+use App\Http\Controllers\Mentor\MentorInternReviewController;
 use App\Http\Controllers\Assignment\AssignmentGroupController;
 use App\Http\Controllers\Assignment\AssignmentInternController;
 use App\Http\Controllers\Assignment\AssignmentMentorController;
 use App\Http\Controllers\Assignment\AssignmentReviewController;
-use App\Http\Controllers\Group\GroupAssignmentController;
-use App\Http\Controllers\Group\GroupController;
-use App\Http\Controllers\Group\GroupInternController;
-use App\Http\Controllers\Group\GroupMentorController;
-use App\Http\Controllers\Intern\InternAssignmentController;
-use App\Http\Controllers\Intern\InternController;
-use App\Http\Controllers\Intern\InternGroupController;
-use App\Http\Controllers\Intern\InternMentorController;
-use App\Http\Controllers\Intern\InternReviewController;
-use App\Http\Controllers\Mentor\MentorAssignmentController;
-use App\Http\Controllers\Mentor\MentorController;
-use App\Http\Controllers\Mentor\MentorGroupController;
-use App\Http\Controllers\Mentor\MentorInternController;
-use App\Http\Controllers\Mentor\MentorInternReviewController;
-use App\Http\Controllers\Mentor\MentorReviewController;
-use App\Http\Controllers\Review\ReviewAssignmentController;
-use App\Http\Controllers\Review\ReviewController;
-use App\Http\Controllers\Review\ReviewInternController;
-use App\Http\Controllers\Review\ReviewMentorController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\User\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,13 +45,16 @@ Route::resource('users', UserController::class, ['except' => ['edit', 'create']]
 Route::name('verify')->get('users/verify/{token}',[UserController::class,'verify']);
 Route::name('resend')->get('users/{user}/resend', [UserController::class, 'resend']);
 
+Route::post('oauth/token', [AccessTokenController::class, 'issueToken']);
+
 //Mentors
-Route::resource('mentors', MentorController::class, ['only' => ['index', 'show', 'store']]);
+Route::resource('mentors', MentorController::class, ['only' => ['index', 'show', 'update']]);
 Route::resource('mentors.groups', MentorGroupController::class, ['only' => ['index']]);
 Route::resource('mentors.interns', MentorInternController::class, ['only' => ['index']]);
 Route::resource('mentors.assignments', MentorAssignmentController::class, ['except' => ['edit', 'create', 'show']]);
 Route::resource('mentors.reviews', MentorReviewController::class, ['only' => ['index']]);
 Route::resource('mentors.interns.reviews', MentorInternReviewController::class, ['only' => ['store', 'update', 'destroy']]);
+Route::name('clone')->get('mentors/{mentor_id}/assignments/{assignment_id}/groups/{groups_id}/clone', [MentorAssignmentController::class, 'clone']);
 
 //Interns
 Route::resource('interns', InternController::class, ['except' => ['edit', 'create']]);
@@ -64,6 +68,7 @@ Route::resource('groups', GroupController::class,['except' => ['edit', 'create']
 Route::resource('groups.mentors', GroupMentorController::class, ['only' => ['index']]);
 Route::resource('groups.interns', GroupInternController::class, ['only' => ['index']]);
 Route::resource('groups.assignments', GroupAssignmentController::class, ['only' => ['index']]);
+Route::name('activate')->put('groups/{group_id}/assignments/{assignment_id}/activate', [GroupAssignmentController::class, 'activate']);
 
 //Assignments
 Route::resource('assignments', AssignmentController::class, ['only' => ['index', 'show']]);
@@ -77,4 +82,6 @@ Route::resource('reviews', ReviewController::class, ['only' => ['index', 'show']
 Route::resource('reviews.mentors', ReviewMentorController::class, ['only' => ['index']]);
 Route::resource('reviews.interns', ReviewInternController::class, ['only' => ['index']]);
 Route::resource('reviews.assignments', ReviewAssignmentController::class, ['only' => ['index']]);
+
+
 

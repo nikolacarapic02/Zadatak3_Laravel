@@ -42,9 +42,6 @@ class InternTransformer extends TransformerAbstract
             'CV' => (string)$intern->cv,
             'GitHub' => (string)$intern->github,
             'group_id' => (int)$intern->group_id,
-            'creationDate' => (string)$intern->created_at,
-            'lastChange' => (string)$intern->updated_at,
-            'deletedDate' => isset($intern->deleted_at) ? (string)$intern->deleted_at : null,
 
             'links' => [
                 [
@@ -83,9 +80,6 @@ class InternTransformer extends TransformerAbstract
             'CV' => 'cv',
             'GitHub' => 'github',
             'group_id' => 'group_id',
-            'creationDate' => 'created_at',
-            'lastChange' => 'updated_at',
-            'deletedDate' => 'deleted_at'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -102,10 +96,7 @@ class InternTransformer extends TransformerAbstract
             'phone' => 'mobile_phone',
             'cv' => 'CV',
             'github' => 'GitHub',
-            'group_id' => 'group_id',
-            'created_at' => 'creationDate',
-            'updated_at' => 'lastChange',
-            'deleted_at' => 'deletedDate'
+            'group_id' => 'group_id'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

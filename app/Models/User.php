@@ -4,12 +4,12 @@ namespace App\Models;
 
 use App\Transformers\UserTransformer;
 use Illuminate\Support\Str;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -50,15 +50,6 @@ class User extends Authenticatable
         'created_at',
         'updated_at',
         'deleted_at'
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
     ];
 
     public function isVerified()

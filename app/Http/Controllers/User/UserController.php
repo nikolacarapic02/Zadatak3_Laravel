@@ -15,8 +15,8 @@ class UserController extends ApiController
 {
     public function __construct()
     {
-        parent::__construct();
-
+        $this->middleware('client.credentials')->only(['resend']);
+        $this->middleware('auth:api')->except(['verify', 'resend']);
         $this->middleware('transform.input:'.UserTransformer::class)->only(['store', 'update']);
     }
 
@@ -52,7 +52,7 @@ class UserController extends ApiController
         $data['password'] = bcrypt($request->password);
         $data['verified'] = User::UNVERIFIED_USER;
         $data['verification_token'] = User::generateVerificationToken();
-        $data['admin'] = User::MENTOR_USER;
+        $data['role'] = User::MENTOR_USER;
 
         $user = User::create($data);
 
@@ -96,7 +96,17 @@ class UserController extends ApiController
 
         $this->validate($request, $rules);
 
-        if($request->has('name'))
+        if($user->role == User::MENTOR_USER)
+        {
+           $mentor = Mentor::where('name', '=', $user->name)->first();
+        }
+
+        if($request->has('name') && $user->role == User::MENTOR_USER)
+        {
+            $user->name = $request->name;
+            $mentor->name = $request->name;
+        }
+        else
         {
             $user->name = $request->name;
         }
@@ -106,6 +116,11 @@ class UserController extends ApiController
             $user->verified = User::UNVERIFIED_USER;
             $user->verification_token = User::generateVerificationToken();
             $user->email = $request->email;
+
+            if($user->role == User::MENTOR_USER)
+            {
+                $mentor->email = $mentor->email;
+            }
         }
 
         if ($request->has('password'))
@@ -115,28 +130,25 @@ class UserController extends ApiController
 
         if($request->has('role'))
         {
-            if (!$user->isVerified()) {
-                return $this->errorResponse('Only verified users can modify the admin field', 409);
+
+            if($request->role == 'mentor')
+            {
+                $mentor = Mentor::create(
+                    [
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'city' => '',
+                        'skype' => null
+                    ]
+                );
+
+                $user->role = $request->role;
             }
             else
             {
-                if($request->role == 'mentor')
-                {
-                    Mentor::create(
-                        [
-                            'name' => $user->name,
-                            'email' => $user->email,
-                            'city' => '',
-                            'skype' => null
-                        ]
-                    );
+                $user->role = $request->role;
 
-                    $user->role = $request->role;
-                }
-                else
-                {
-                    $user->role = $request->role;
-                }
+                $mentor->delete();
             }
         }
 
@@ -145,7 +157,16 @@ class UserController extends ApiController
             return $this->errorResponse('You need to specify a different value to update', 422);
         }
 
-        $user->save();
+        if($user->rol == User::MENTOR_USER)
+        {
+            $user->save();
+
+            $mentor->save();
+        }
+        else
+        {
+            $user->save();
+        }
 
         return $this->showOne($user);
     }
@@ -162,7 +183,7 @@ class UserController extends ApiController
 
         if($user->role == 'mentor')
         {
-            $mentor = Mentor::findOrFail($user->id - $user->where('role', '!=', 'mentor')->count());
+            $mentor = Mentor::where('name', '=', $user->name);
             $mentor->delete();
         }
 

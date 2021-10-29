@@ -25,7 +25,7 @@ class MentorFactory extends Factory
             'name' => $this->faker->name(),
             'city' => $this->faker->city(),
             'email' => $this->faker->safeEmail(),
-            'skype' => null
+            'skype' => $this->faker->userName()
         ];
     }
 }

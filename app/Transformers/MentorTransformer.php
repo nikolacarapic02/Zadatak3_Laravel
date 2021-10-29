@@ -38,9 +38,6 @@ class MentorTransformer extends TransformerAbstract
             'city' => (string)$mentor->city,
             'email' => (string)$mentor->email,
             'skype' => (string)$mentor->skype,
-            'creationDate' => (string)$mentor->created_at,
-            'lastChange' => (string)$mentor->updated_at,
-            'deletedDate' => isset($mentor->deleted_at) ? (string)$mentor->deleted_at : null,
 
             'links' => [
                 [
@@ -74,10 +71,7 @@ class MentorTransformer extends TransformerAbstract
             'name' => 'name',
             'city' => 'city',
             'email' => 'email',
-            'skype' => 'skype',
-            'creationDate' => 'created_at',
-            'lastChange' => 'updated_at',
-            'deletedDate' => 'deleted_at'
+            'skype' => 'skype'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -90,10 +84,7 @@ class MentorTransformer extends TransformerAbstract
             'name' => 'name',
             'city' => 'city',
             'email' => 'email',
-            'skype' => 'skype',
-            'created_at' => 'creationDate',
-            'updated_at' => 'lastChange',
-            'deleted_at' => 'deletedDate'
+            'skype' => 'skype'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

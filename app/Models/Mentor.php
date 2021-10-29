@@ -23,11 +23,9 @@ class Mentor extends Model
         'city',
         'skype',
         'email',
-        'group_id'
     ];
 
     protected $hidden = [
-        'group_id',
         'created_at',
         'updated_at',
         'deleted_at',

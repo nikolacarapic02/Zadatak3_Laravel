@@ -35,9 +35,6 @@ class GroupTransformer extends TransformerAbstract
         return [
             'identifier' => (int)$group->id,
             'name' => (string)$group->name,
-            'creationDate' => (string)$group->created_at,
-            'lastChange' => (string)$group->updated_at,
-            'deletedDate' => isset($group->deleted_at) ? (string)$group->deleted_at : null,
 
             'links' => [
                 [
@@ -64,10 +61,7 @@ class GroupTransformer extends TransformerAbstract
     {
         $attributes = [
             'identifier' => 'id',
-            'name' => 'name',
-            'creationDate' => 'created_at',
-            'lastChange' => 'updated_at',
-            'deletedDate' => 'deleted_at'
+            'name' => 'name'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -77,10 +71,7 @@ class GroupTransformer extends TransformerAbstract
     {
         $attributes = [
             'id' => 'identifier',
-            'name' => 'name',
-            'created_at' => 'creationDate',
-            'updated_at' => 'lastChange',
-            'deleted_at' => 'deletedDate'
+            'name' => 'name'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

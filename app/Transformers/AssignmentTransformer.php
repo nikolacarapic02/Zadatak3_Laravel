@@ -36,14 +36,11 @@ class AssignmentTransformer extends TransformerAbstract
             'identifier' => (int)$assignment->id,
             'title' => (string)$assignment->name,
             'details' => (string)$assignment->description,
-            'stratDate' => (string)$assignment->start_date,
+            'startDate' => (string)$assignment->start_date,
             'finishDate' => (string)$assignment->finish_date,
             'status' => (string)$assignment->status,
             'group_id' => (int)$assignment->group_id,
             'mentor_id'=> (int)$assignment->mentor_id,
-            'creationDate' => (string)$assignment->created_at,
-            'lastChange' => (string)$assignment->updated_at,
-            'deletedDate' => isset($assignment->deleted_at) ? (string)$assignment->deleted_at : null,
 
             'links' => [
                 [
@@ -76,14 +73,11 @@ class AssignmentTransformer extends TransformerAbstract
             'identifier' => 'id',
             'title' => 'name',
             'details' => 'description',
-            'stratDate' => 'start_date',
+            'startDate' => 'start_date',
             'finishDate' => 'finish_date',
             'status' => 'status',
             'group_id' => 'group_id',
-            'mentor_id'=> 'mentor_id',
-            'creationDate' => 'created_at',
-            'lastChange' => 'updated_at',
-            'deletedDate' => 'deleted_at'
+            'mentor_id'=> 'mentor_id'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -99,10 +93,7 @@ class AssignmentTransformer extends TransformerAbstract
             'finish_date' => 'finishDate',
             'status' => 'status',
             'group_id' => 'group_id',
-            'mentor_id'=> 'mentor_id',
-            'created_at' => 'creationDate',
-            'updated_at' => 'lastChange',
-            'deleted_at' => 'deletedDate'
+            'mentor_id'=> 'mentor_id'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

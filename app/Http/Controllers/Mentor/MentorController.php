@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mentor;
 
 use App\Models\User;
+use App\Models\Group;
 use App\Models\Mentor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,8 +14,8 @@ class MentorController extends ApiController
 {
     public function __construct()
     {
-        parent::__construct();
-
+        $this->middleware('client.credentials')->only(['index', 'show']);
+        $this->middleware('auth:api')->except(['index', 'show']);
         $this->middleware('transform.input:'.MentorTransformer::class)->only(['store']);
     }
 
@@ -36,29 +37,43 @@ class MentorController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function update(Request $request, Mentor $mentor)
     {
         $rules = [
-            'name' => 'required',
-            'city' => 'required',
-            'email' => 'required|email',
-            'skype' => 'required'
+            'name' => 'string',
+            'city' => 'string',
+            'email' => 'email',
+            'skype' => 'string'
         ];
 
         $this->validate($request, $rules);
 
-        $data = $request->all();
+        $user = User::where('name', '=', $mentor->name)->first();
 
-        $mentor = Mentor::create($data);
+        if($request->has('name'))
+        {
+            $mentor->name = $request->name;
+            $user->name = $request->name;
+        }
 
-        User::create(
-            [
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'role' => User::MENTOR_USER,
-                'verified' => User::UNVERIFIED_USER
-            ]
-        );
+        if($request->has('city'))
+        {
+            $mentor->city = $request->city;
+        }
+
+        if($request->has('skype'))
+        {
+            $mentor->skype = $request->skype;
+        }
+
+        if($request->has('email'))
+        {
+            $mentor->email = $request->email;
+            $user->email = $user->email;
+        }
+
+        $mentor->save();
+        $user->save();
 
         return $this->showOne($mentor);
     }

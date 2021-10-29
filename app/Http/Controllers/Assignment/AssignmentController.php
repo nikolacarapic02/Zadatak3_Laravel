@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers\Assignment;
 
-use App\Http\Controllers\ApiController;
-use App\Http\Controllers\Controller;
 use App\Models\Assignment;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
+use App\Transformers\AssignmentTransformer;
 
 class AssignmentController extends ApiController
 {
+    public function __construct()
+    {
+        $this->middleware('client.credentials')->only(['index', 'show']);
+    }
+
     /**
      * Display a listing of the resource.
      *

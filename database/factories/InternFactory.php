@@ -30,7 +30,7 @@ class InternFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
             'cv' => $this->faker->randomElement(['cv1.txt', 'cv2.txt', 'cv3.txt']),
-            'github' => null,
+            'github' => $this->faker->userName(),
             'group_id' => Group::all()->random()->id
         ];
     }

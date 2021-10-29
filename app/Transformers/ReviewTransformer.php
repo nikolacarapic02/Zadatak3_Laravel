@@ -38,10 +38,8 @@ class ReviewTransformer extends TransformerAbstract
             'disadvantages' => (string)$review->cons,
             'assignment_id' => (int)$review->assignment_id,
             'mentor_id' => (int)$review->mentor_id,
-            'review_id' => (int)$review->review_id,
+            'intern_id' => (int)$review->intern_id,
             'creationDate' => (string)$review->created_at,
-            'lastChange' => (string)$review->updated_at,
-            'deletedDate' => isset($review->deleted_at) ? (string)$review->deleted_at : null,
 
             'links' => [
                 [
@@ -54,7 +52,7 @@ class ReviewTransformer extends TransformerAbstract
                 ],
                 [
                     'rel' => 'reviews.interns',
-                    'href' => route('reviews.reviews.index',$review->id)
+                    'href' => route('reviews.interns.index',$review->id)
                 ],
                 [
                     'rel' => 'reviews.assignments',
@@ -72,10 +70,8 @@ class ReviewTransformer extends TransformerAbstract
             'disadvantages' => 'cons',
             'assignment_id' => 'assignment_id',
             'mentor_id' => 'mentor_id',
-            'review_id' => 'review_id',
-            'creationDate' => 'created_at',
-            'lastChange' => 'updated_at',
-            'deletedDate' => 'deleted_at'
+            'intern_id' => 'intern_id',
+            'creationDate' => 'created_at'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -89,10 +85,8 @@ class ReviewTransformer extends TransformerAbstract
             'cons' => 'disadvantages',
             'assignment_id' => 'assignment_id',
             'mentor_id' => 'mentor_id',
-            'review_id' => 'review_id',
-            'created_at' => 'creationDate',
-            'updated_at' => 'lastChange',
-            'deleted_at' => 'deletedDate'
+            'intern_id' => 'intern_id',
+            'created_at' => 'creationDate'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

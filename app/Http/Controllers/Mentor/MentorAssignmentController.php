@@ -15,8 +15,8 @@ class MentorAssignmentController extends ApiController
 {
     public function __construct()
     {
-        parent::__construct();
-
+        $this->middleware('client.credentials')->only(['index']);
+        $this->middleware('auth:api')->except(['index']);
         $this->middleware('transform.input:'.AssignmentTransformer::class)->only(['store', 'update']);
     }
 
@@ -169,5 +169,37 @@ class MentorAssignmentController extends ApiController
         {
             throw new HttpException(422, 'Group id is invalid, because the mentor does not belong to this group!!');
         }
+    }
+
+    public function clone($mentor_id, $assignment_id, $group_id)
+    {
+        $assignment = Assignment::where('id', '=', $assignment_id)->firstOrFail();
+
+        $group = Group::where('id', '=', $group_id)->firstOrFail();
+
+        if($group->mentors()->pluck('id')->contains($mentor_id))
+        {
+            if($group->assignments()->pluck('description')->contains($assignment->description))
+            {
+                return $this->errorResponse('The assignment is already in the selected group!!',409);
+            }
+            else
+            {
+                $new_assignment = Assignment::create([
+                    'name' => $assignment->name,
+                    'description' => $assignment->description,
+                    'status' => Assignment::INACTIVE_ASSIGNMENT,
+                    'group_id' => $group->id,
+                    'mentor_id' => $mentor_id
+                ]);
+
+                return $this->showOne($new_assignment);
+            }
+        }
+        else
+        {
+            return $this->errorResponse('This mentor cannot clone assignment to this group, because the mentor is not a part of this group!!',409);
+        }
+
     }
 }

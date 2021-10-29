@@ -15,9 +15,8 @@ class MentorInternReviewController extends ApiController
 {
     public function __construct()
     {
-        parent::__construct();
-
-        $this->middleware('transform.input:'.ReviewTransformer::class)->only(['store', 'update']);
+        $this->middleware('auth:api')->only(['store', 'update', 'destroy']);
+        $this->middleware('transform.input:'. ReviewTransformer::class)->only(['store', 'update']);
     }
 
     /**

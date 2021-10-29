@@ -2,8 +2,21 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Models\Group;
+use App\Models\Intern;
+use App\Models\Mentor;
+use App\Models\Review;
+use App\Models\Assignment;
+use App\Policies\UserPolicy;
+use App\Policies\GroupPolicy;
+use App\Policies\InternPolicy;
+use App\Policies\MentorPolicy;
+use App\Policies\ReviewPolicy;
+use Illuminate\Support\Carbon;
+use Laravel\Passport\Passport;
+use App\Policies\AssignmentPolicy;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +26,12 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        Intern::class => InternPolicy::class,
+        Group::class => GroupPolicy::class,
+        Assignment::class => AssignmentPolicy::class,
+        User::class => UserPolicy::class,
+        Review::class => ReviewPolicy::class,
+        Mentor::class => MentorPolicy::class
     ];
 
     /**
@@ -25,6 +43,19 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Passport::routes();
+        Passport::tokensExpireIn(Carbon::now()->addMinutes(30));
+        Passport::refreshTokensExpireIn(Carbon::now()->addDays(30));
+        Passport::enableImplicitGrant();
+
+        Passport::tokensCan(
+            [
+                'create-assignmnets' => 'Create a new assignments',
+                'manage-assignments' => 'Read, update, and delete assignmnets (CRUD)',
+                'create-account' => 'Create a new account',
+                'manage-account' => 'Read your account data, id, name, email, if verified, and if admin (cannot read password). Modify your account data (email, and password). Cannot delete your account',
+                'read-general' => 'Read general information like interns, mentors, groups, assignments, reviews',
+            ]
+        );
     }
 }
