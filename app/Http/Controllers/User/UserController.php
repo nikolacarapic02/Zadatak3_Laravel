@@ -29,7 +29,14 @@ class UserController extends ApiController
     {
         $users = User::all();
 
-        return $this->showAll($users);
+        if($users->isEmpty())
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showAll($users);
+        }
     }
 
     /**
@@ -43,7 +50,7 @@ class UserController extends ApiController
         $rules = [
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:6',
         ];
 
         $this->validate($request, $rules);
@@ -90,8 +97,8 @@ class UserController extends ApiController
     {
         $rules = [
             'email' => 'email|unique:users',
-            'password' => 'min:6|confirmed',
-            'admin' => 'in:' . User::ADMIN_USER . ',' . User::RECRUITER_USER . ',' . User::MENTOR_USER
+            'password' => 'min:6',
+            'role' => 'in:' . User::ADMIN_USER . ',' . User::RECRUITER_USER . ',' . User::MENTOR_USER
         ];
 
         $this->validate($request, $rules);
@@ -101,14 +108,17 @@ class UserController extends ApiController
            $mentor = Mentor::where('name', '=', $user->name)->first();
         }
 
-        if($request->has('name') && $user->role == User::MENTOR_USER)
+        if($request->has('name'))
         {
-            $user->name = $request->name;
-            $mentor->name = $request->name;
-        }
-        else
-        {
-            $user->name = $request->name;
+            if($user->role == User::MENTOR_USER)
+            {
+                $user->name = $request->name;
+                $mentor->name = $request->name;
+            }
+            else
+            {
+                $user->name = $request->name;
+            }
         }
 
         if ($request->has('email') && $user->email != $request->email)
@@ -119,7 +129,7 @@ class UserController extends ApiController
 
             if($user->role == User::MENTOR_USER)
             {
-                $mentor->email = $mentor->email;
+                $mentor->email = $user->email;
             }
         }
 
@@ -157,7 +167,7 @@ class UserController extends ApiController
             return $this->errorResponse('You need to specify a different value to update', 422);
         }
 
-        if($user->rol == User::MENTOR_USER)
+        if($user->role == User::MENTOR_USER)
         {
             $user->save();
 

@@ -6,7 +6,6 @@ use App\Models\Assignment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
-use App\Transformers\AssignmentTransformer;
 
 class AssignmentMentorController extends ApiController
 {
@@ -24,7 +23,14 @@ class AssignmentMentorController extends ApiController
     {
         $mentor = $assignment->mentor;
 
-        return $this->showOne($mentor);
+        if(empty($mentor))
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showOne($mentor);
+        }
     }
 
 }

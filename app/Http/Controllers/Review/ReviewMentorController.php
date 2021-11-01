@@ -23,7 +23,14 @@ class ReviewMentorController extends ApiController
     {
         $mentor = $review->mentor;
 
-        return $this->showOne($mentor);
+        if(empty($mentor))
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showOne($mentor);
+        }
     }
 
 }

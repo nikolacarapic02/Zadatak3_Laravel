@@ -7,7 +7,6 @@ use App\Models\Assignment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
-use App\Transformers\GroupTransformer;
 use App\Transformers\AssignmentTransformer;
 use App\Http\Controllers\ApiController;
 
@@ -28,7 +27,14 @@ class GroupAssignmentController extends ApiController
     {
         $assignments = $group->assignments;
 
-        return $this->showAll($assignments);
+        if($assignments->isEmpty())
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showAll($assignments);
+        }
     }
 
     public function activate($group_id, $assignment_id, Request $request)

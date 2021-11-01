@@ -36,6 +36,7 @@ class UserTransformer extends TransformerAbstract
             'identifier' => (int)$user->id,
             'name' => (string)$user->name,
             'email' => (string)$user->email,
+            'password' => (string)$user->password,
             'isVerified' => (string)$user->verified,
             'role' => (string)$user->role,
 
@@ -54,6 +55,7 @@ class UserTransformer extends TransformerAbstract
             'identifier' => 'id',
             'name' => 'name',
             'email' => 'email',
+            'password' => 'password',
             'isVerified' => 'verified',
             'role' => 'role',
         ];
@@ -67,6 +69,7 @@ class UserTransformer extends TransformerAbstract
             'id' => 'identifier',
             'name' => 'name',
             'email' => 'email',
+            'password' => 'password',
             'verified' => 'isVerified',
             'role' => 'role',
         ];

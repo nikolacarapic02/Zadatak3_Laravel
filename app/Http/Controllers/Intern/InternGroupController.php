@@ -6,7 +6,6 @@ use App\Models\Intern;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
-use App\Transformers\InternTransformer;
 
 class InternGroupController extends ApiController
 {
@@ -23,7 +22,14 @@ class InternGroupController extends ApiController
     {
         $group = $intern->group;
 
-        return $this->showOne($group);
+        if(empty($group))
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showOne($group);
+        }
     }
 
 }

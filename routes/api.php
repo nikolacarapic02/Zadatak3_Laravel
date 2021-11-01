@@ -69,6 +69,8 @@ Route::resource('groups.mentors', GroupMentorController::class, ['only' => ['ind
 Route::resource('groups.interns', GroupInternController::class, ['only' => ['index']]);
 Route::resource('groups.assignments', GroupAssignmentController::class, ['only' => ['index']]);
 Route::name('activate')->put('groups/{group_id}/assignments/{assignment_id}/activate', [GroupAssignmentController::class, 'activate']);
+Route::name('addMentor')->put('groups/{group_id}/addmentor', [GroupController::class, 'addMentor']);
+Route::name('deleteMentor')->put('groups/{group_id}/deletementor', [GroupController::class, 'deleteMentor']);
 
 //Assignments
 Route::resource('assignments', AssignmentController::class, ['only' => ['index', 'show']]);

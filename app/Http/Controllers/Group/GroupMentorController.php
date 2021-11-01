@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Group;
 use App\Models\Group;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Transformers\GroupTransformer;
 use App\Http\Controllers\ApiController;
 
 class GroupMentorController extends ApiController
@@ -24,7 +23,14 @@ class GroupMentorController extends ApiController
     {
         $mentors = $group->mentors;
 
-        return $this->showAll($mentors);
+        if($mentors->isEmpty())
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showAll($mentors);
+        }
     }
 
 }

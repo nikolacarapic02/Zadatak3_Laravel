@@ -6,7 +6,6 @@ use App\Models\Assignment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
-use App\Transformers\AssignmentTransformer;
 
 class AssignmentInternController extends ApiController
 {
@@ -24,7 +23,14 @@ class AssignmentInternController extends ApiController
     {
         $interns = $assignment->group->interns;
 
-        return $this->showAll($interns);
+        if($interns->isEmpty())
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showAll($interns);
+        }
     }
 
 }

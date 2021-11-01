@@ -24,7 +24,14 @@ class InternReviewController extends ApiController
     {
         $reviews = $intern->reviews;
 
-        return $this->showAll($reviews);
+        if($reviews->isEmpty())
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showAll($reviews);
+        }
     }
 
 }

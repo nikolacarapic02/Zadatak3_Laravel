@@ -22,7 +22,14 @@ class MentorGroupController extends ApiController
     {
         $groups = $mentor->groups;
 
-        return $this->showAll($groups);
+        if($groups->isEmpty())
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showAll($groups);
+        }
     }
 
 }

@@ -6,7 +6,6 @@ use App\Models\Assignment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
-use App\Transformers\AssignmentTransformer;
 
 class AssignmentReviewController extends ApiController
 {
@@ -24,7 +23,14 @@ class AssignmentReviewController extends ApiController
     {
         $reviews = $assignment->reviews;
 
-        return $this->showAll($reviews);
+        if($reviews->isEmpty())
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showAll($reviews);
+        }
     }
 
 }

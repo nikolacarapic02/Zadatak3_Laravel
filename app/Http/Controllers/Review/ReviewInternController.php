@@ -23,7 +23,14 @@ class ReviewInternController extends ApiController
     {
         $intern = $review->intern;
 
-        return $this->showOne($intern);
+        if(empty($intern))
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showOne($intern);
+        }
     }
 
 }

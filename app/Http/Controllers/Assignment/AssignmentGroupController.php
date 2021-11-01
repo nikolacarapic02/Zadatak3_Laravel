@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Assignment;
 
-use App\Models\Group;
 use App\Models\Assignment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
-use App\Transformers\AssignmentTransformer;
 
 class AssignmentGroupController extends ApiController
 {
@@ -25,6 +23,13 @@ class AssignmentGroupController extends ApiController
     {
         $group = $assignment->group;
 
-        return $this->showOne($group);
+        if(empty($group))
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showOne($group);
+        }
     }
 }

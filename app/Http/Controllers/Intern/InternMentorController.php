@@ -23,7 +23,14 @@ class InternMentorController extends ApiController
     {
         $mentors = $intern->group->mentors;
 
-        return $this->showAll($mentors);
+        if($mentors->isEmpty())
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showAll($mentors);
+        }
     }
 
 }

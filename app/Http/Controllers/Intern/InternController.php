@@ -28,7 +28,14 @@ class InternController extends ApiController
     {
         $interns = Intern::all();
 
-        return $this->showAll($interns);
+        if($interns->isEmpty())
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showAll($interns);
+        }
     }
 
     /**

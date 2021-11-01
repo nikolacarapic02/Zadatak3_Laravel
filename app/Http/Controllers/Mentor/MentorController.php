@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Mentor;
 
 use App\Models\User;
-use App\Models\Group;
 use App\Models\Mentor;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,7 +27,14 @@ class MentorController extends ApiController
     {
         $mentors = Mentor::all();
 
-        return $this->showAll($mentors);
+        if($mentors->isEmpty())
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showAll($mentors);
+        }
     }
 
     /**
@@ -42,7 +48,7 @@ class MentorController extends ApiController
         $rules = [
             'name' => 'string',
             'city' => 'string',
-            'email' => 'email',
+            'email' => 'email|unique:mentors',
             'skype' => 'string'
         ];
 
@@ -70,6 +76,11 @@ class MentorController extends ApiController
         {
             $mentor->email = $request->email;
             $user->email = $user->email;
+        }
+
+        if($mentor->isClean())
+        {
+            return $this->errorResponse('You need to specify a different value to update', 422);
         }
 
         $mentor->save();

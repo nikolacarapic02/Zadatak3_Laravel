@@ -29,7 +29,14 @@ class MentorAssignmentController extends ApiController
     {
         $assignments = $mentor->assignments;
 
-        return $this->showall($assignments);
+        if($assignments->isEmpty())
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showall($assignments);
+        }
     }
 
     /**

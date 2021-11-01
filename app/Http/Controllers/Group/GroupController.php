@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Group;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
 use App\Models\Group;
+use App\Models\Mentor;
 use App\Transformers\GroupTransformer;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,14 @@ class GroupController extends ApiController
     {
         $groups = Group::all();
 
-        return $this->showAll($groups);
+        if($groups->isEmpty())
+        {
+            return $this->showMessage('There is no data!!');
+        }
+        else
+        {
+            return $this->showAll($groups);
+        }
     }
 
     /**
@@ -96,5 +104,73 @@ class GroupController extends ApiController
         $group->delete();
 
         return $this->showOne($group);
+    }
+
+    public function addMentor(Request $request, $group_id)
+    {
+        $rules = [
+            'mentor_id' => 'integer|min:1'
+        ];
+
+        $this->validate($request, $rules);
+
+        $group = Group::where('id', '=', $group_id)->first();
+
+        if($group->mentors->pluck('id')->contains($request->mentor_id))
+        {
+            return $this->errorResponse('The mentor is already in the group!!', 409);
+        }
+
+        if($request->has('mentor_id'))
+        {
+            if(Mentor::all()->contains($request->mentor_id))
+            {
+                $group->mentors()->attach($request->mentor_id);
+            }
+            else
+            {
+                return $this->errorResponse('This mentor_id does not exist!!', 409);
+            }
+        }
+        else
+        {
+            return $this->errorResponse('You need to specify mentor_id!!', 409);
+        }
+
+        return $this->showMessage('Mentor with id ' . $request->mentor_id . ' was successfully added to the group.');
+    }
+
+    public function deleteMentor(Request $request, $group_id)
+    {
+        $rules = [
+            'mentor_id' => 'integer|min:1'
+        ];
+
+        $this->validate($request, $rules);
+
+        $group = Group::where('id', '=', $group_id)->first();
+
+        if(!$group->mentors->pluck('id')->contains($request->mentor_id))
+        {
+            return $this->errorResponse('There is no mentor in the group with this id!!', 409);
+        }
+
+        if($request->has('mentor_id'))
+        {
+            if(Mentor::all()->contains($request->mentor_id))
+            {
+                $group->mentors()->detach($request->mentor_id);
+            }
+            else
+            {
+                return $this->errorResponse('This mentor_id does not exist!!', 409);
+            }
+        }
+        else
+        {
+            return $this->errorResponse('You need to specify mentor_id!!', 409);
+        }
+
+        return $this->showMessage('Mentor with id ' . $request->mentor_id . ' was successfully deleted from the group.');
     }
 }
