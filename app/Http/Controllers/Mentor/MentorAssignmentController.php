@@ -15,9 +15,13 @@ class MentorAssignmentController extends ApiController
 {
     public function __construct()
     {
+        parent::__construct();
         $this->middleware('client.credentials')->only(['index']);
-        $this->middleware('auth:api')->except(['index']);
         $this->middleware('transform.input:'.AssignmentTransformer::class)->only(['store', 'update']);
+        $this->middleware('can:view,mentor')->only('index');
+        $this->middleware('can:update,mentor')->only('update');
+        $this->middleware('can:delete,mentor')->only('destroy');
+        $this->middleware('can:createAssignmentReview,mentor')->only('store');
     }
 
     /**
@@ -79,8 +83,10 @@ class MentorAssignmentController extends ApiController
     public function update(Request $request, Mentor $mentor, Assignment $assignment)
     {
         $rules = [
+            'name' => 'string',
+            'description' => 'string',
             'group_id' => 'integer|min:1',
-            'status' => 'string|in:' . Assignment::ACTIVE_ASSIGNMENT . ', ' . Assignment::INACTIVE_ASSIGNMENT
+            'status' => 'string|in:' . Assignment::INACTIVE_ASSIGNMENT
         ];
 
         $this->validate($request, $rules);
@@ -158,9 +164,15 @@ class MentorAssignmentController extends ApiController
     {
         $this->checkMentor($mentor, $assignment);
 
-        $assignment->delete();
-
-        return $this->showOne($assignment);
+        if($assignment->reviews->pluck('id')->isEmpty())
+        {
+            $assignment->delete();
+            return $this->showOne($assignment);
+        }
+        else
+        {
+            return $this->errorResponse('You cannot delete assignment, because this assignment contains other values!!', 409);
+        }
     }
 
     protected function checkMentor(Mentor $mentor, Assignment $assignment)

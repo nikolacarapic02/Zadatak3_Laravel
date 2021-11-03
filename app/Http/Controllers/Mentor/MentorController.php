@@ -14,8 +14,10 @@ class MentorController extends ApiController
     public function __construct()
     {
         $this->middleware('client.credentials')->only(['index', 'show']);
-        $this->middleware('auth:api')->except(['index', 'show']);
+        $this->middleware('auth:api')->except(['index']);
         $this->middleware('transform.input:'.MentorTransformer::class)->only(['store']);
+        $this->middleware('can:view,mentor')->only('show');
+        $this->middleware('can:update,mentor')->only('update');
     }
 
     /**
@@ -54,7 +56,7 @@ class MentorController extends ApiController
 
         $this->validate($request, $rules);
 
-        $user = User::where('name', '=', $mentor->name)->first();
+        $user = User::where('email', '=', $mentor->email)->first();
 
         if($request->has('name'))
         {
@@ -75,7 +77,7 @@ class MentorController extends ApiController
         if($request->has('email'))
         {
             $mentor->email = $request->email;
-            $user->email = $user->email;
+            $user->email = $request->email;
         }
 
         if($mentor->isClean())

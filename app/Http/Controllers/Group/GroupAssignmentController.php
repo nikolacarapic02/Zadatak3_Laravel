@@ -14,8 +14,11 @@ class GroupAssignmentController extends ApiController
 {
     public function __construct()
     {
+        parent::__construct();
         $this->middleware('client.credentials')->only(['index']);
         $this->middleware('transform.input:'.AssignmentTransformer::class)->only(['activate']);
+        $this->middleware('can:view,group')->only('index');
+        $this->middleware('can:activate,group')->only('activate');
     }
 
     /**
@@ -37,7 +40,7 @@ class GroupAssignmentController extends ApiController
         }
     }
 
-    public function activate($group_id, $assignment_id, Request $request)
+    public function activate(Group $group, Assignment $assignment, Request $request)
     {
         $rules = [
             'finish_date' => 'date'
@@ -45,7 +48,12 @@ class GroupAssignmentController extends ApiController
 
         $this->validate($request, $rules);
 
-        $assignment = Assignment::where('id', '=', $assignment_id)->where('group_id', '=', $group_id)->firstOrFail();
+        $assignment = Assignment::where('id', '=', $assignment->id)->where('group_id', '=', $group->id)->firstOrFail();
+
+        if($assignment->status == Assignment::ACTIVE_ASSIGNMENT)
+        {
+            return $this->errorResponse('Assignment is already active!!', 409);
+        }
 
         $assignment->status = Assignment::ACTIVE_ASSIGNMENT;
 

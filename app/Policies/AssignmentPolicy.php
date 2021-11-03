@@ -3,12 +3,14 @@
 namespace App\Policies;
 
 use App\Models\Assignment;
+use App\Models\Mentor;
 use App\Models\User;
+use App\Traits\AdminActions;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AssignmentPolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization, AdminActions;
 
     /**
      * Determine whether the user can view any models.
@@ -30,7 +32,15 @@ class AssignmentPolicy
      */
     public function view(User $user, Assignment $assignment)
     {
-        //
+        if($user->isRecruiter())
+        {
+            return true;
+        }
+        else
+        {
+            $mentor = Mentor::where('email', '=', $user->email)->first();
+            return $mentor->assignments->pluck('id')->contains($assignment->id);
+        }
     }
 
     /**

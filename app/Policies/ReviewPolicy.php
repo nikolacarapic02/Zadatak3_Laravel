@@ -2,13 +2,15 @@
 
 namespace App\Policies;
 
+use App\Models\Mentor;
 use App\Models\Review;
 use App\Models\User;
+use App\Traits\AdminActions;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ReviewPolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization, AdminActions;
 
     /**
      * Determine whether the user can view any models.
@@ -30,7 +32,16 @@ class ReviewPolicy
      */
     public function view(User $user, Review $review)
     {
-        //
+        if($user->isRecruiter())
+        {
+            return true;
+        }
+        else
+        {
+            $mentor = Mentor::where('email', '=', $user->email)->first();
+            return $mentor->reviews->pluck('id')->contains($review->id);
+        }
+
     }
 
     /**

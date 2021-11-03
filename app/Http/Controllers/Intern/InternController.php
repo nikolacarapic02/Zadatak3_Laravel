@@ -15,8 +15,12 @@ class InternController extends ApiController
     public function __construct()
     {
         $this->middleware('client.credentials')->only(['index', 'show']);
-        $this->middleware('auth:api')->except(['index', 'show']);
+        $this->middleware('auth:api')->except(['index']);
         $this->middleware('transform.input:'.InternTransformer::class)->only(['store', 'update']);
+        $this->middleware('can:view,intern')->only('show');
+        $this->middleware('can:create')->only('store');
+        $this->middleware('can:update,intern')->only('update');
+        $this->middleware('can:delete,intern')->only('destroy');
     }
 
     /**
@@ -50,7 +54,7 @@ class InternController extends ApiController
             'name' => 'required',
             'city' => 'required',
             'address' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:interns',
             'phone' => 'required',
             'cv' => 'required|mimes:rtf,txt,pdf,docx',
             'github' => 'required',
@@ -60,6 +64,7 @@ class InternController extends ApiController
         $this->validate($request, $rules);
 
         $data = $request->all();
+        $data['github'] = 'https://github.com/'.$data['github'];
 
         if(Group::all()->pluck('id')->contains($request->group_id))
         {
@@ -98,7 +103,11 @@ class InternController extends ApiController
     public function update(Request $request, Intern $intern)
     {
         $rules = [
-            'email' => 'email',
+            'name' => 'string',
+            'city' => 'string',
+            'address' => 'string',
+            'phone' => 'string',
+            'email' => 'email|unique:interns',
             'cv' => 'mimes: rtf, txt, pdf, docx',
             'group_id' => 'integer|min:0'
         ];
@@ -139,7 +148,7 @@ class InternController extends ApiController
 
         if($request->has('github'))
         {
-            $intern->github = $request->github;
+            $intern->github = 'https://github.com/'.$request->github;
         }
 
         if($request->has('group_id'))
@@ -172,10 +181,17 @@ class InternController extends ApiController
      */
     public function destroy(Intern $intern)
     {
-        $intern->delete();
+        if($intern->reviews->pluck('id')->isEmpty())
+        {
+            $intern->delete();
 
-        Storage::delete($intern->cv);
+            Storage::delete($intern->cv);
 
-        return $this->showOne($intern);
+            return $this->showOne($intern);
+        }
+        else
+        {
+            return $this->errorResponse('You cannot delete intern, because this intern contains other values!!', 409);
+        }
     }
 }

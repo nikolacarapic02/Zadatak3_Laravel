@@ -5,22 +5,12 @@ namespace App\Policies;
 use App\Models\User;
 use App\Models\Intern;
 use App\Models\Mentor;
+use App\Traits\AdminActions;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class InternPolicy
 {
-    use HandlesAuthorization;
-
-    /**
-     * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function viewAny(User $user)
-    {
-        //
-    }
+    use HandlesAuthorization, AdminActions;
 
     /**
      * Determine whether the user can view the model.
@@ -31,7 +21,15 @@ class InternPolicy
      */
     public function view(User $user, Intern $intern)
     {
-
+        if($user->isRecruiter())
+        {
+            return true;
+        }
+        else
+        {
+            $mentor = Mentor::where('email', '=', $user->email)->first();
+            return $mentor->groups->pluck('id')->contains($intern->group->id);
+        }
     }
 
     /**
@@ -42,7 +40,7 @@ class InternPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->isRecruiter();
     }
 
     /**
@@ -54,7 +52,7 @@ class InternPolicy
      */
     public function update(User $user, Intern $intern)
     {
-        //
+        return $user->isRecruiter();
     }
 
     /**
@@ -66,7 +64,7 @@ class InternPolicy
      */
     public function delete(User $user, Intern $intern)
     {
-        //
+        return $user->isRecruiter();
     }
 
     /**

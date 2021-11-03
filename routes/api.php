@@ -44,6 +44,7 @@ use App\Http\Controllers\Assignment\AssignmentReviewController;
 Route::resource('users', UserController::class, ['except' => ['edit', 'create']]);
 Route::name('verify')->get('users/verify/{token}',[UserController::class,'verify']);
 Route::name('resend')->get('users/{user}/resend', [UserController::class, 'resend']);
+Route::name('changeRole')->put('users/{user}/changerole', [UserController::class, 'changeRole']);
 
 Route::post('oauth/token', [AccessTokenController::class, 'issueToken']);
 
@@ -68,7 +69,7 @@ Route::resource('groups', GroupController::class,['except' => ['edit', 'create']
 Route::resource('groups.mentors', GroupMentorController::class, ['only' => ['index']]);
 Route::resource('groups.interns', GroupInternController::class, ['only' => ['index']]);
 Route::resource('groups.assignments', GroupAssignmentController::class, ['only' => ['index']]);
-Route::name('activate')->put('groups/{group_id}/assignments/{assignment_id}/activate', [GroupAssignmentController::class, 'activate']);
+Route::name('activate')->put('groups/{group}/assignments/{assignment}/activate', [GroupAssignmentController::class, 'activate']);
 Route::name('addMentor')->put('groups/{group_id}/addmentor', [GroupController::class, 'addMentor']);
 Route::name('deleteMentor')->put('groups/{group_id}/deletementor', [GroupController::class, 'deleteMentor']);
 

@@ -15,8 +15,11 @@ class MentorInternReviewController extends ApiController
 {
     public function __construct()
     {
-        $this->middleware('auth:api')->only(['store', 'update', 'destroy']);
+        parent::__construct();
         $this->middleware('transform.input:'. ReviewTransformer::class)->only(['store', 'update']);
+        $this->middleware('can:update,mentor')->only('update');
+        $this->middleware('can:delete,mentor')->only('destroy');
+        $this->middleware('can:createAssignmentReview,mentor')->only('store');
     }
 
     /**
@@ -69,6 +72,8 @@ class MentorInternReviewController extends ApiController
     public function update(Request $request, Mentor $mentor, Intern $intern, Review $review)
     {
         $rules = [
+            'pros' => 'string',
+            'cons' => 'string',
             'assignment_id' => 'integer|min:1',
             'mentor_id' => 'integer|min:1',
             'intern_id' => 'integer|min:1'

@@ -18,6 +18,11 @@ class UserController extends ApiController
         $this->middleware('client.credentials')->only(['resend']);
         $this->middleware('auth:api')->except(['verify', 'resend']);
         $this->middleware('transform.input:'.UserTransformer::class)->only(['store', 'update']);
+        $this->middleware('can:view,user')->only('show');
+        $this->middleware('can:create')->only('store');
+        $this->middleware('can:update,user')->only('update');
+        $this->middleware('can:delete,user')->only('delete');
+        $this->middleware('can:admin-action')->only('changeRole');
     }
 
     /**
@@ -96,16 +101,16 @@ class UserController extends ApiController
     public function update(Request $request, User $user)
     {
         $rules = [
+            'name' => 'string',
             'email' => 'email|unique:users',
-            'password' => 'min:6',
-            'role' => 'in:' . User::ADMIN_USER . ',' . User::RECRUITER_USER . ',' . User::MENTOR_USER
+            'password' => 'min:6'
         ];
 
         $this->validate($request, $rules);
 
         if($user->role == User::MENTOR_USER)
         {
-           $mentor = Mentor::where('name', '=', $user->name)->first();
+           $mentor = Mentor::where('email', '=', $user->email)->first();
         }
 
         if($request->has('name'))
@@ -138,30 +143,6 @@ class UserController extends ApiController
             $user->password = bcrypt($request->password);
         }
 
-        if($request->has('role'))
-        {
-
-            if($request->role == 'mentor')
-            {
-                $mentor = Mentor::create(
-                    [
-                        'name' => $user->name,
-                        'email' => $user->email,
-                        'city' => '',
-                        'skype' => null
-                    ]
-                );
-
-                $user->role = $request->role;
-            }
-            else
-            {
-                $user->role = $request->role;
-
-                $mentor->delete();
-            }
-        }
-
         if($user->isClean())
         {
             return $this->errorResponse('You need to specify a different value to update', 422);
@@ -189,12 +170,22 @@ class UserController extends ApiController
      */
     public function destroy(User $user)
     {
-        $user->delete();
-
         if($user->role == 'mentor')
         {
-            $mentor = Mentor::where('name', '=', $user->name);
-            $mentor->delete();
+            $mentor = Mentor::where('email', '=', $user->email)->first();
+            if($mentor->assignments->pluck('id')->isEmpty() && $mentor->reviews->pluck('id')->isEmpty() && $mentor->interns->pluck('id')->isEmpty())
+            {
+                $user->delete();
+                $mentor->delete();
+            }
+            else
+            {
+                return $this->errorResponse('You cannot delete user, because this user contains other values!!', 409);
+            }
+        }
+        else
+        {
+            $user->delete();
         }
 
         return $this->showOne($user);
@@ -223,5 +214,50 @@ class UserController extends ApiController
             }, 100);
 
         return $this->showMessage('The verification email has been resend');
+    }
+
+    public function changeRole(Request $request, User $user)
+    {
+        $rules = [
+            'role' => 'in:' . User::ADMIN_USER . ',' . User::RECRUITER_USER . ',' . User::MENTOR_USER
+        ];
+
+        $this->validate($request, $rules);
+
+        if($request->has('role'))
+        {
+            if($user->role == $request->role)
+            {
+                return $this->errorResponse('You need to specify a different value to update', 422);
+            }
+            else
+            {
+                if($request->role == 'mentor')
+                {
+                    $mentor = Mentor::create(
+                        [
+                            'name' => $user->name,
+                            'email' => $user->email,
+                            'city' => '',
+                            'skype' => null
+                        ]
+                    );
+
+                    $user->role = $request->role;
+                }
+                else
+                {
+                    $user->role = $request->role;
+
+                    $mentor = Mentor::where('email', '=', $user->email)->first();
+
+                    $mentor->delete();
+                }
+            }
+        }
+
+        $user->save();
+
+        return $this->showOne($user);
     }
 }

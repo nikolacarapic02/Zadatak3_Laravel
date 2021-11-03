@@ -14,8 +14,12 @@ class GroupController extends ApiController
     public function __construct()
     {
         $this->middleware('client.credentials')->only(['index', 'show']);
-        $this->middleware('auth:api')->except(['index', 'show']);
+        $this->middleware('auth:api')->except(['index']);
         $this->middleware('transform.input:'.GroupTransformer::class)->only(['store', 'update']);
+        $this->middleware('can:view,group')->only('show');
+        $this->middleware('can:create')->only('store');
+        $this->middleware('can:update,group')->only(['update, addMentor, deleteMentor']);
+        $this->middleware('can:delete,group')->only('destroy');
     }
 
     /**
@@ -78,6 +82,12 @@ class GroupController extends ApiController
      */
     public function update(Request $request, Group $group)
     {
+        $rules = [
+            'name' => 'string'
+        ];
+
+        $this->validate($request, $rules);
+
         if($request->has('name'))
         {
             $group->name = $request->name;
@@ -101,9 +111,16 @@ class GroupController extends ApiController
      */
     public function destroy(Group $group)
     {
-        $group->delete();
+        if($group->interns->pluck('id')->isEmpty() && $group->mentors->pluck('id')->isEmpty() && $group->assignments->pluck('id')->isEmpty())
+        {
+            $group->delete();
+            return $this->showOne($group);
+        }
+        else
+        {
+            return $this->errorResponse('You cannot delete group, because this group contains other values!!', 409);
+        }
 
-        return $this->showOne($group);
     }
 
     public function addMentor(Request $request, $group_id)

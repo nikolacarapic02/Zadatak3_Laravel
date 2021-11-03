@@ -11,7 +11,9 @@ class AssignmentInternController extends ApiController
 {
     public function __construct()
     {
+        parent::__construct();
         $this->middleware('client.credentials')->only(['index']);
+        $this->middleware('can:view,assignment')->only('index');
     }
 
     /**

@@ -2,13 +2,15 @@
 
 namespace App\Policies;
 
-use App\Models\Group;
 use App\Models\User;
+use App\Models\Group;
+use App\Models\Mentor;
+use App\Traits\AdminActions;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class GroupPolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization, AdminActions;
 
     /**
      * Determine whether the user can view any models.
@@ -30,7 +32,15 @@ class GroupPolicy
      */
     public function view(User $user, Group $group)
     {
-        //
+        if($user->isRecruiter())
+        {
+            return true;
+        }
+        else
+        {
+            $mentor = Mentor::where('email', '=', $user->email)->first();
+            return $mentor->groups->pluck('id')->contains($group->id);
+        }
     }
 
     /**
@@ -41,7 +51,7 @@ class GroupPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->isRecruiter();
     }
 
     /**
@@ -53,7 +63,20 @@ class GroupPolicy
      */
     public function update(User $user, Group $group)
     {
-        //
+        return $user->isRecruiter();
+    }
+
+    public function activate(User $user, Group $group)
+    {
+        if($user->isRecruiter())
+        {
+            return false;
+        }
+        else
+        {
+            $mentor = Mentor::where('email', '=', $user->email)->first();
+            return $mentor->groups->pluck('id')->contains($group->id);
+        }
     }
 
     /**
@@ -65,7 +88,7 @@ class GroupPolicy
      */
     public function delete(User $user, Group $group)
     {
-        //
+        return $user->isRecruiter();
     }
 
     /**

@@ -4,11 +4,12 @@ namespace App\Policies;
 
 use App\Models\Mentor;
 use App\Models\User;
+use App\Traits\AdminActions;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class MentorPolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization, AdminActions;
 
     /**
      * Determine whether the user can view any models.
@@ -30,7 +31,14 @@ class MentorPolicy
      */
     public function view(User $user, Mentor $mentor)
     {
-        //
+        if($user->isRecruiter())
+        {
+            return true;
+        }
+        else
+        {
+            return $user->email == $mentor->email;
+        }
     }
 
     /**
@@ -39,9 +47,9 @@ class MentorPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function createAssignmentReview(User $user, Mentor $mentor)
     {
-        //
+        return $user->email == $mentor->email;
     }
 
     /**
@@ -53,7 +61,7 @@ class MentorPolicy
      */
     public function update(User $user, Mentor $mentor)
     {
-        //
+        return $user->email == $mentor->email;
     }
 
     /**
@@ -65,7 +73,7 @@ class MentorPolicy
      */
     public function delete(User $user, Mentor $mentor)
     {
-        //
+        return $user->email == $mentor->email;
     }
 
     /**

@@ -16,7 +16,7 @@ class Assignment extends Model
     use HasFactory, SoftDeletes;
 
     const ACTIVE_ASSIGNMENT = 'active';
-    const INACTIVE_ASSIGNMENT = 'inactiv';
+    const INACTIVE_ASSIGNMENT = 'inactive';
 
     public $transformer = AssignmentTransformer::class;
 
