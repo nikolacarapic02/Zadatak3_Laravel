@@ -62,10 +62,13 @@ class MentorAssignmentController extends ApiController
         $data = $request->all();
 
         $data['mentor_id'] = $mentor->id;
+        $data['status'] = Assignment::INACTIVE_ASSIGNMENT;
 
         if($mentor->groups->pluck('id')->contains($data['group_id']))
         {
-            Assignment::create($data);
+            $assignment = Assignment::create($data);
+
+            return $this->showOne($assignment);
         }
         else
         {
@@ -110,7 +113,7 @@ class MentorAssignmentController extends ApiController
             $assignment->group_id = $request->group_id;
         }
 
-        if($assignment->status == 'inactive')
+        if($assignment->status == Assignment::INACTIVE_ASSIGNMENT)
         {
             if($request->has('status') || $request->has('start_date') || $request->has('finish_date'))
             {

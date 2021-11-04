@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Transformers\UserTransformer;
 use Illuminate\Support\Str;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -44,12 +43,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
+        'password',
         'remember_token',
         'verification_token',
         'created_at',
         'updated_at',
-        'deleted_at',
-        'password'
+        'deleted_at'
     ];
 
     public function isVerified()

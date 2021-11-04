@@ -18,7 +18,7 @@ class GroupController extends ApiController
         $this->middleware('transform.input:'.GroupTransformer::class)->only(['store', 'update']);
         $this->middleware('can:view,group')->only('show');
         $this->middleware('can:create')->only('store');
-        $this->middleware('can:update,group')->only(['update, addMentor, deleteMentor']);
+        $this->middleware('can:update,group')->only('update', 'addMentor', 'deleteMentor');
         $this->middleware('can:delete,group')->only('destroy');
     }
 

@@ -18,10 +18,11 @@ class UserController extends ApiController
         $this->middleware('client.credentials')->only(['resend']);
         $this->middleware('auth:api')->except(['verify', 'resend']);
         $this->middleware('transform.input:'.UserTransformer::class)->only(['store', 'update']);
+        $this->middleware('can:admin-action')->only('index');
         $this->middleware('can:view,user')->only('show');
         $this->middleware('can:create')->only('store');
         $this->middleware('can:update,user')->only('update');
-        $this->middleware('can:delete,user')->only('delete');
+        $this->middleware('can:delete,user')->only('destroy');
         $this->middleware('can:admin-action')->only('changeRole');
     }
 
@@ -214,6 +215,13 @@ class UserController extends ApiController
             }, 100);
 
         return $this->showMessage('The verification email has been resend');
+    }
+
+    public function me(Request $request)
+    {
+        $user = $request->user();
+
+        return $this->showOne($user);
     }
 
     public function changeRole(Request $request, User $user)

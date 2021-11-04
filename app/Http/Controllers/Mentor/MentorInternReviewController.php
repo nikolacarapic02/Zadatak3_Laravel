@@ -43,13 +43,21 @@ class MentorInternReviewController extends ApiController
         $data['mentor_id'] = $mentor->id;
         $data['intern_id'] = $intern->id;
 
+
         if($mentor->groups->pluck('id')->contains($intern->group_id))
         {
             if($mentor->assignments->pluck('id')->contains($data['assignment_id']))
             {
-                $review = Review::create($data);
+                if($mentor->assignments->pluck('status')->contains('inactive'))
+                {
+                    return $this->errorResponse('Mentor cannot leave review, because assignmnet is not active!!', 409);
+                }
+                else
+                {
+                    $review = Review::create($data);
 
-                return $this->showOne($review);
+                    return $this->showOne($review);
+                }
             }
             else
             {

@@ -47,7 +47,7 @@ class AuthServiceProvider extends ServiceProvider
             return $user->isAdmin();
         });
 
-        Gate::define('create', function($user) {
+        Gate::define('create', function ($user) {
             return $user->isRecruiter() || $user->isAdmin();
         });
 

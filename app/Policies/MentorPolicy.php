@@ -64,6 +64,18 @@ class MentorPolicy
         return $user->email == $mentor->email;
     }
 
+    public function updateMentor(User $user, Mentor $mentor)
+    {
+        if($user->isRecruiter())
+        {
+            return true;
+        }
+        else
+        {
+            return $user->email == $mentor->email;
+        }
+    }
+
     /**
      * Determine whether the user can delete the model.
      *

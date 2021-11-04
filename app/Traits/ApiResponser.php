@@ -98,7 +98,7 @@ trait ApiResponser
         $results = $collection->slice(($page-1)*$perPage, $perPage)->values();
 
         $paginated = new PaginationLengthAwarePaginator($results, $collection->count(), $perPage, $page, [
-            'path' => PaginationLengthAwarePaginator::resolveCurrentPage()
+            'path' => url()->current()
         ]);
 
         $paginated->appends(request()->all());

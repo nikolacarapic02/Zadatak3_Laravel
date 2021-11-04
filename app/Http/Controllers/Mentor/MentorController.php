@@ -17,7 +17,7 @@ class MentorController extends ApiController
         $this->middleware('auth:api')->except(['index']);
         $this->middleware('transform.input:'.MentorTransformer::class)->only(['store']);
         $this->middleware('can:view,mentor')->only('show');
-        $this->middleware('can:update,mentor')->only('update');
+        $this->middleware('can:updateMentor,mentor')->only('update');
     }
 
     /**

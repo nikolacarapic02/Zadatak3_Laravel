@@ -41,10 +41,11 @@ use App\Http\Controllers\Assignment\AssignmentReviewController;
 */
 
 //Users
+Route::name('me')->get('users/me', [UserController::class, 'me']);
 Route::resource('users', UserController::class, ['except' => ['edit', 'create']]);
+Route::name('changeRole')->put('users/{user}/changerole', [UserController::class, 'changeRole']);
 Route::name('verify')->get('users/verify/{token}',[UserController::class,'verify']);
 Route::name('resend')->get('users/{user}/resend', [UserController::class, 'resend']);
-Route::name('changeRole')->put('users/{user}/changerole', [UserController::class, 'changeRole']);
 
 Route::post('oauth/token', [AccessTokenController::class, 'issueToken']);
 
