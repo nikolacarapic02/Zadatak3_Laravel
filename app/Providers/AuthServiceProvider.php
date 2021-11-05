@@ -55,15 +55,5 @@ class AuthServiceProvider extends ServiceProvider
         Passport::tokensExpireIn(Carbon::now()->addMinutes(30));
         Passport::refreshTokensExpireIn(Carbon::now()->addDays(30));
         Passport::enableImplicitGrant();
-
-        Passport::tokensCan(
-            [
-                'create-assignmnets' => 'Create a new assignments',
-                'manage-assignments' => 'Read, update, and delete assignmnets (CRUD)',
-                'create-account' => 'Create a new account',
-                'manage-account' => 'Read your account data, id, name, email, if verified, and if admin (cannot read password). Modify your account data (email, and password). Cannot delete your account',
-                'read-general' => 'Read general information like interns, mentors, groups, assignments, reviews',
-            ]
-        );
     }
 }
