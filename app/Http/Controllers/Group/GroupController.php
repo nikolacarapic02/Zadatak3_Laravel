@@ -113,6 +113,7 @@ class GroupController extends ApiController
     {
         if($group->interns->pluck('id')->isEmpty() && $group->mentors->pluck('id')->isEmpty() && $group->assignments->pluck('id')->isEmpty())
         {
+            $group->mentors()->sync([]);
             $group->delete();
             return $this->showOne($group);
         }

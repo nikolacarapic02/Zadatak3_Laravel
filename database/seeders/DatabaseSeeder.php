@@ -62,19 +62,28 @@ class DatabaseSeeder extends Seeder
                     ]
                 );
 
-                Intern::factory(rand(1,6))->create(
+                Intern::factory()->count(rand(2,4))->create(
                     [
                         'group_id' => $groups->first()
+                    ]
+                );
+                Assignment::factory()->count(rand(1,3))->create(
+                    [
+                        'group_id' => $groups->first(),
+                        'mentor_id' => $mentor->id
                     ]
                 );
 
-                Assignment::factory(rand(0,2))->create(
+                $intern = $mentor->interns;
+                $assignment = $mentor->assignments;
+
+                Review::factory()->count(rand(0,2))->create(
                     [
+                        'assignment_id' => $assignment->first(),
                         'mentor_id' => $mentor->id,
-                        'group_id' => $groups->first()
+                        'intern_id' => $intern->first()
                     ]
                 );
-            }
-        );
+            });
     }
 }

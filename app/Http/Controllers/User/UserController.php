@@ -177,6 +177,7 @@ class UserController extends ApiController
             if($mentor->assignments->pluck('id')->isEmpty() && $mentor->reviews->pluck('id')->isEmpty() && $mentor->interns->pluck('id')->isEmpty())
             {
                 $user->delete();
+                $mentor->groups()->sync([]);
                 $mentor->delete();
             }
             else
@@ -259,7 +260,10 @@ class UserController extends ApiController
 
                     $mentor = Mentor::where('email', '=', $user->email)->first();
 
+                    $mentor->groups()->sync([]);
+
                     $mentor->delete();
+
                 }
             }
         }

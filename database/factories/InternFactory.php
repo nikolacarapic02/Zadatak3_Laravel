@@ -31,7 +31,7 @@ class InternFactory extends Factory
             'phone' => $this->faker->phoneNumber(),
             'cv' => $this->faker->randomElement(['cv1.txt', 'cv2.txt', 'cv3.txt']),
             'github' => 'https://github.com/'.$this->faker->userName(),
-            'group_id' => Group::all()->random()->id
+            'group_id' => rand(1, Group::count())
         ];
     }
 }

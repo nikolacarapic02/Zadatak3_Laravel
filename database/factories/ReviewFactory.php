@@ -27,9 +27,9 @@ class ReviewFactory extends Factory
         return [
             'pros' => $this->faker->paragraph(3),
             'cons' => $this->faker->paragraph(2),
-            'assignment_id' => Assignment::all()->random()->id,
-            'mentor_id' => Mentor::all()->random()->id,
-            'intern_id' => Intern::all()->random()->id
+            'assignment_id' => rand(1,Assignment::count()),
+            'mentor_id' => rand(1, Mentor::count()),
+            'intern_id' => rand(1, Intern::count())
         ];
     }
 }

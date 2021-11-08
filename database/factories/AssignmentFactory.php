@@ -29,8 +29,8 @@ class AssignmentFactory extends Factory
             'start_date' => null,
             'finish_date' => null,
             'status' => Assignment::INACTIVE_ASSIGNMENT,
-            'group_id' => Group::all()->random()->id,
-            'mentor_id' => Mentor::all()->random()->id
+            'group_id' => rand(1,Group::count()),
+            'mentor_id' => rand(1, Mentor::count())
         ];
     }
 }
