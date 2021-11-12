@@ -68,7 +68,7 @@ class MentorAssignmentController extends ApiController
         {
             $assignment = Assignment::create($data);
 
-            return $this->showOne($assignment);
+            return $this->showOne($assignment,201);
         }
         else
         {

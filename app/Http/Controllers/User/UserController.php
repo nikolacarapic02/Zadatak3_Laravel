@@ -78,7 +78,7 @@ class UserController extends ApiController
             ]
         );
 
-        return $this->showOne($user);
+        return $this->showOne($user, 201);
     }
 
     /**

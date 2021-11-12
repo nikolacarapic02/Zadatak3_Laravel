@@ -59,7 +59,7 @@ class GroupController extends ApiController
 
         $group = Group::create($data);
 
-        return $this->showOne($group);
+        return $this->showOne($group, 201);
     }
 
     /**

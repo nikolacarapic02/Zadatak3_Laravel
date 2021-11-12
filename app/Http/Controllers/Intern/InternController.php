@@ -69,11 +69,11 @@ class InternController extends ApiController
         if(Group::all()->pluck('id')->contains($request->group_id))
         {
 
-            $data['cv'] = $request->cv->store('');
+            ///$data['cv'] = $request->cv->store('');
 
             $intern = Intern::create($data);
 
-            return $this->showOne($intern);
+            return $this->showOne($intern,201);
 
         }
         else

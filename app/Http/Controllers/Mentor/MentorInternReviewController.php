@@ -56,7 +56,7 @@ class MentorInternReviewController extends ApiController
                 {
                     $review = Review::create($data);
 
-                    return $this->showOne($review);
+                    return $this->showOne($review,201);
                 }
             }
             else

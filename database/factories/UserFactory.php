@@ -27,7 +27,7 @@ class UserFactory extends Factory
             'email' => $this->faker->safeEmail(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password,
             'role' => $this->faker->randomElement([User::ADMIN_USER, User::RECRUITER_USER]),
-            'verified' => $verified = $this->faker->randomElement([User::VERIFIED_USER, User::UNVERIFIED_USER]),
+            'verified' => $verified = User::UNVERIFIED_USER,
             'verification_token' => $verified==User::VERIFIED_USER ? null : User::generateVerificationToken(),
             'remember_token' => Str::random(10),
         ];
