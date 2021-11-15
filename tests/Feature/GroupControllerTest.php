@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Assignment;
 use App\Models\Group;
 use App\Models\Mentor;
 use Tests\TestCase;
@@ -20,14 +21,11 @@ class GroupControllerTest extends TestCase
 
         Passport::actingAs($user);
 
-        if($user->isAdmin() || $user->isRecruiter())
-        {
-            $response = $this->json('POST', '/groups', [
-                'name' => 'London'
+        $response = $this->json('POST', '/groups', [
+            'name' => 'London'
             ]);
 
-            $response->assertStatus(201);
-        }
+        $response->assertStatus(201);
     }
 
     public function test_can_update_group()
@@ -40,14 +38,11 @@ class GroupControllerTest extends TestCase
 
         Passport::actingAs($user);
 
-        if($user->isAdmin() || $user->isRecruiter())
-        {
-            $response = $this->json('PUT', "/groups/{$group->id}", [
-                'name' => 'Berlin'
-            ]);
+        $response = $this->json('PUT', "/groups/{$group->id}", [
+            'name' => 'Berlin'
+        ]);
 
-            $response->assertStatus(200);
-        }
+        $response->assertStatus(200);
     }
 
     public function test_can_delete_group()
@@ -58,11 +53,76 @@ class GroupControllerTest extends TestCase
 
         Passport::actingAs($user);
 
-        if($user->isAdmin() || $user->isRecruiter())
-        {
-            $response = $this->delete("/groups/{$group->id}");
+        $response = $this->delete("/groups/{$group->id}");
 
-            $response->assertStatus(200);
-        }
+        $response->assertStatus(200);
+    }
+
+    public function test_can_activate_assignment_in_group()
+    {
+        $user = User::factory()->create([
+            'role' => User::MENTOR_USER
+        ]);
+
+        $mentor =Mentor::factory()->create([
+            'name' => $user->name,
+            'email' => $user->email
+        ]);
+
+        Passport::actingAs($user);
+
+        $group = Group::factory()->create();
+
+        $mentor->groups()->attach($group->id);
+
+        $assignment = Assignment::factory()->create([
+            'mentor_id' => $mentor->id,
+            'group_id' => $group->id
+        ]);
+
+        $response = $this->put("/groups/{$group->id}/assignments/{$assignment->id}/activate", [
+            'finishDate' => '2021-11-25'
+        ]);
+
+        $response->assertStatus(200);
+
+    }
+
+    public function test_can_add_mentor_in_group()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = User::factory()->create();
+
+        Passport::actingAs($user);
+
+        $group = Group::factory()->create();
+
+        $mentor = Mentor::factory()->create();
+
+        $response = $this->put("/groups/{$group->id}/addmentor",[
+            'mentor_id' => $mentor->id
+        ]);
+
+        $response->assertStatus(200);
+    }
+
+    public function test_can_delete_mentor_in_group()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = User::factory()->create();
+
+        Passport::actingAs($user);
+
+        $group = Group::factory()->create();
+
+        $mentor = Mentor::factory()->create();
+
+        $response = $this->put("/groups/{$group->id}/addmentor",[
+            'mentor_id' => $mentor->id
+        ]);
+
+        $response->assertStatus(200);
     }
 }
