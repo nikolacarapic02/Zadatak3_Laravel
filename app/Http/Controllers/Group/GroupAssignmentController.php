@@ -15,7 +15,6 @@ class GroupAssignmentController extends ApiController
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('client.credentials')->only(['index']);
         $this->middleware('transform.input:'.AssignmentTransformer::class)->only(['activate']);
         $this->middleware('can:view,group')->only('index');
         $this->middleware('can:activate,group')->only('activate');

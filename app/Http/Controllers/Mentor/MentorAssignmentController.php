@@ -16,7 +16,6 @@ class MentorAssignmentController extends ApiController
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('client.credentials')->only(['index']);
         $this->middleware('transform.input:'.AssignmentTransformer::class)->only(['store', 'update']);
         $this->middleware('can:view,mentor')->only('index');
         $this->middleware('can:update,mentor')->only('update');

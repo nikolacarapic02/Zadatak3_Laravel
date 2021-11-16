@@ -16,26 +16,23 @@ class UserControllerTest extends TestCase
 
     public function test_can_only_admin_view_users()
     {
-        $user = User::factory()->create();
+        $this->withoutExceptionHandling();
+
+        $user = User::factory()->create([
+            'role' => User::ADMIN_USER
+        ]);
 
         Passport::actingAs($user);
 
-        if($user->isAdmin())
-        {
-            $response = $this->get('/users');
+        $response = $this->get('/users');
 
-            $response->assertStatus(200);
-        }
-        else
-        {
-            $response = $this->get('/users');
-
-            $response->assertStatus(403);
-        }
+        $response->assertStatus(200);
     }
 
     public function test_can_view_me()
     {
+        $this->withoutExceptionHandling();
+
         $user = User::factory()->create();
 
         Passport::actingAs($user);
@@ -47,6 +44,8 @@ class UserControllerTest extends TestCase
 
     public function test_can_create_user()
     {
+        $this->withoutExceptionHandling();
+
         $user = User::factory()->create();
 
         Passport::actingAs($user);
@@ -62,6 +61,8 @@ class UserControllerTest extends TestCase
 
     public function test_can_update_user()
     {
+        $this->withoutExceptionHandling();
+
         $user = User::factory()->create();
 
         Passport::actingAs($user);
@@ -76,6 +77,8 @@ class UserControllerTest extends TestCase
 
     public function test_can_delete_user()
     {
+        $this->withoutExceptionHandling();
+
         $user = User::factory()->create();
 
         Passport::actingAs($user);
@@ -87,6 +90,8 @@ class UserControllerTest extends TestCase
 
     public function test_can_verify_user()
     {
+        $this->withoutExceptionHandling();
+
         $user = User::factory()->create();
 
         Passport::actingAs($user);
@@ -98,6 +103,8 @@ class UserControllerTest extends TestCase
 
     public function test_user_duplication()
     {
+        $this->withoutExceptionHandling();
+
         $user1 = User::factory()->create([
             'name' => 'John Doe',
             'email' => 'johndoe@gmail.com',

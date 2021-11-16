@@ -14,9 +14,9 @@ class InternController extends ApiController
 {
     public function __construct()
     {
-        $this->middleware('client.credentials')->only(['index', 'show']);
-        $this->middleware('auth:api')->except(['index']);
+        parent::__construct();
         $this->middleware('transform.input:'.InternTransformer::class)->only(['store', 'update']);
+        $this->middleware('can:viewAll')->only('index');
         $this->middleware('can:view,intern')->only('show');
         $this->middleware('can:create')->only('store');
         $this->middleware('can:update,intern')->only('update');
@@ -69,7 +69,7 @@ class InternController extends ApiController
         if(Group::all()->pluck('id')->contains($request->group_id))
         {
 
-            ///$data['cv'] = $request->cv->store('');
+            $data['cv'] = $request->cv->store('');
 
             $intern = Intern::create($data);
 

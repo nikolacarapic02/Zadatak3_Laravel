@@ -15,8 +15,25 @@ class GroupControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_can_view_group()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = User::factory()->create();
+
+        $groups = Group::factory()->count(5)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->get('/groups');
+
+        $response->assertStatus(200);
+    }
+
     public function test_can_create_group()
     {
+        $this->withoutExceptionHandling();
+
         $user = User::factory()->create();
 
         Passport::actingAs($user);
@@ -47,6 +64,8 @@ class GroupControllerTest extends TestCase
 
     public function test_can_delete_group()
     {
+        $this->withoutExceptionHandling();
+
         $group = Group::factory()->create();
 
         $user = User::factory()->create();
@@ -60,6 +79,8 @@ class GroupControllerTest extends TestCase
 
     public function test_can_activate_assignment_in_group()
     {
+        $this->withoutExceptionHandling();
+
         $user = User::factory()->create([
             'role' => User::MENTOR_USER
         ]);
@@ -107,7 +128,7 @@ class GroupControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_can_delete_mentor_in_group()
+    public function test_can_delete_mentor_from_group()
     {
         $this->withoutExceptionHandling();
 

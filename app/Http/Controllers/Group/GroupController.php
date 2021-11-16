@@ -13,13 +13,14 @@ class GroupController extends ApiController
 {
     public function __construct()
     {
-        $this->middleware('client.credentials')->only(['index', 'show']);
-        $this->middleware('auth:api')->except(['index']);
+        parent::__construct();
         $this->middleware('transform.input:'.GroupTransformer::class)->only(['store', 'update']);
+        $this->middleware('can:viewAll')->only('index');
         $this->middleware('can:view,group')->only('show');
         $this->middleware('can:create')->only('store');
-        $this->middleware('can:update,group')->only('update', 'addMentor', 'deleteMentor');
+        $this->middleware('can:update,group')->only('update');
         $this->middleware('can:delete,group')->only('destroy');
+        $this->middleware('can:add-delete-mentor-from-group')->only('addMentor', 'deleteMentor');
     }
 
     /**

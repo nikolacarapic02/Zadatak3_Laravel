@@ -18,6 +18,21 @@ class MentorControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_can_view_mentor()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = User::factory()->create();
+
+        $mentors = Mentor::factory()->count(5)->create();
+
+        Passport::actingAs($user);
+
+        $response = $this->get('/mentors');
+
+        $response->assertStatus(200);
+    }
+
     public function test_can_update_mentor()
     {
         $this->withoutExceptionHandling();

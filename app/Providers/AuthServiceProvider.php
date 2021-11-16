@@ -51,6 +51,14 @@ class AuthServiceProvider extends ServiceProvider
             return $user->isRecruiter() || $user->isAdmin();
         });
 
+        Gate::define('viewAll', function($user){
+            return $user->isRecruiter() || $user->isAdmin();
+        });
+
+        Gate::define('add-delete-mentor-from-group', function($user){
+            return $user->isRecruiter() || $user->isAdmin();
+        });
+
         Passport::routes();
         Passport::tokensExpireIn(Carbon::now()->addMinutes(30));
         Passport::refreshTokensExpireIn(Carbon::now()->addDays(30));

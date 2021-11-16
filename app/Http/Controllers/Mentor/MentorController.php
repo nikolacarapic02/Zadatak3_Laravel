@@ -13,9 +13,9 @@ class MentorController extends ApiController
 {
     public function __construct()
     {
-        $this->middleware('client.credentials')->only(['index', 'show']);
-        $this->middleware('auth:api')->except(['index']);
-        $this->middleware('transform.input:'.MentorTransformer::class)->only(['store']);
+        parent::__construct();
+        $this->middleware('transform.input:'.MentorTransformer::class)->only(['update']);
+        $this->middleware('can:viewAll')->only('index');
         $this->middleware('can:view,mentor')->only('show');
         $this->middleware('can:updateMentor,mentor')->only('update');
     }
