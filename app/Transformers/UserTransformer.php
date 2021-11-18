@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use App\Models\Mentor;
 use App\Models\User;
 use League\Fractal\TransformerAbstract;
 
@@ -25,6 +26,16 @@ class UserTransformer extends TransformerAbstract
         //
     ];
 
+    protected function checkUser(User $user)
+    {
+        if($user->role == User::MENTOR_USER)
+        {
+            $mentor = Mentor::where('email', '=', $user->email)->first();
+
+            return ['rel' => 'mentor', 'href' => route('mentors.show', $mentor->id)];
+        }
+    }
+
     /**
      * A Fractal transformer.
      *
@@ -32,21 +43,48 @@ class UserTransformer extends TransformerAbstract
      */
     public function transform(User $user)
     {
-        return [
-            'identifier' => (int)$user->id,
-            'name' => (string)$user->name,
-            'email' => (string)$user->email,
-            'password' => (string)$user->password,
-            'isVerified' => (string)$user->verified,
-            'role' => (string)$user->role,
+        if($user->role == User::MENTOR_USER)
+        {
+            $mentor = Mentor::where('email', '=', $user->email)->first();
 
-            'links' => [
-                [
-                    'rel' => 'self',
-                    'href' => route('users.show', $user->id)
+            return [
+                'identifier' => (int)$user->id,
+                'name' => (string)$user->name,
+                'email' => (string)$user->email,
+                'password' => (string)$user->password,
+                'isVerified' => (string)$user->verified,
+                'role' => (string)$user->role,
+
+                'links' => [
+                    [
+                        'rel' => 'self',
+                        'href' => route('users.show', $user->id)
+                    ],
+                    [
+                        'rel' => 'self.mentor',
+                        'href' => route('mentors.show', $mentor->id)
+                    ]
                 ]
-            ]
-        ];
+            ];
+        }
+        else
+        {
+            return [
+                'identifier' => (int)$user->id,
+                'name' => (string)$user->name,
+                'email' => (string)$user->email,
+                'password' => (string)$user->password,
+                'isVerified' => (string)$user->verified,
+                'role' => (string)$user->role,
+
+                'links' => [
+                    [
+                        'rel' => 'self',
+                        'href' => route('users.show', $user->id)
+                    ]
+                ]
+            ];
+        }
     }
 
     public static function originalAttribute($index)

@@ -8,6 +8,7 @@ use App\Models\Review;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
+use App\Models\Assignment;
 use App\Transformers\ReviewTransformer;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -43,12 +44,13 @@ class MentorInternReviewController extends ApiController
         $data['mentor_id'] = $mentor->id;
         $data['intern_id'] = $intern->id;
 
+        $assignment = $mentor->assignments->where('id', '=', $data['assignment_id'])->first();
 
         if($mentor->groups->pluck('id')->contains($intern->group_id))
         {
             if($mentor->assignments->pluck('id')->contains($data['assignment_id']))
             {
-                if($mentor->assignments->pluck('status')->contains('inactive'))
+                if($assignment->status == Assignment::INACTIVE_ASSIGNMENT)
                 {
                     return $this->errorResponse('Mentor cannot leave review, because assignmnet is not active!!', 409);
                 }
