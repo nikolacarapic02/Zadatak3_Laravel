@@ -26,16 +26,6 @@ class UserTransformer extends TransformerAbstract
         //
     ];
 
-    protected function checkUser(User $user)
-    {
-        if($user->role == User::MENTOR_USER)
-        {
-            $mentor = Mentor::where('email', '=', $user->email)->first();
-
-            return ['rel' => 'mentor', 'href' => route('mentors.show', $mentor->id)];
-        }
-    }
-
     /**
      * A Fractal transformer.
      *
