@@ -98,7 +98,8 @@ class GroupControllerTest extends TestCase
 
         $assignment = Assignment::factory()->create([
             'mentor_id' => $mentor->id,
-            'group_id' => $group->id
+            'group_id' => $group->id,
+            'status' => Assignment::INACTIVE_ASSIGNMENT
         ]);
 
         $response = $this->put("/groups/{$group->id}/assignments/{$assignment->id}/activate", [

@@ -51,6 +51,11 @@ trait ApiResponser
 		return $this->successResponse(['data' => $message], $code);
 	}
 
+    protected function singleResponse($message, $code = 200)
+    {
+        return $this->successResponse(['data' => $message, 'code' => $code], $code);
+    }
+
     protected function filterData(Collection $collection, $transformer)
     {
         foreach(request()->query() as $query => $value)

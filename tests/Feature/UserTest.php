@@ -57,11 +57,13 @@ class UserControllerTest extends TestCase
         $response->assertStatus(201);
     }
 
-    public function test_can_update_user()
+    public function test_can_only_admin_update_user()
     {
         $this->withoutExceptionHandling();
 
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'role' => User::ADMIN_USER
+        ]);
 
         Passport::actingAs($user);
 
@@ -73,11 +75,13 @@ class UserControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_can_delete_user()
+    public function test_can_only_admin_delete_user()
     {
         $this->withoutExceptionHandling();
 
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'role' => User::ADMIN_USER
+        ]);
 
         Passport::actingAs($user);
 

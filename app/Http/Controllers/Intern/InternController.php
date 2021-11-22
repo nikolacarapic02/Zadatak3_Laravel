@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Intern;
 
 use App\Models\Group;
 use App\Models\Intern;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
@@ -34,7 +35,7 @@ class InternController extends ApiController
 
         if($interns->isEmpty())
         {
-            return $this->showMessage('There is no data!!');
+            return $this->singleResponse('There is no data!!');
         }
         else
         {
@@ -181,17 +182,15 @@ class InternController extends ApiController
      */
     public function destroy(Intern $intern)
     {
-        if($intern->reviews->pluck('id')->isEmpty())
-        {
-            $intern->delete();
+        $intern->delete();
 
-            Storage::delete($intern->cv);
+        Storage::delete($intern->cv);
 
-            return $this->showOne($intern);
-        }
-        else
+        if(!empty($intern->reviews->pluck('id')->first()))
         {
-            return $this->errorResponse('You cannot delete intern, because this intern contains other values!!', 409);
+            Review::where('intern_id', '=', $intern->id)->delete();
         }
+
+        return $this->showOne($intern);
     }
 }

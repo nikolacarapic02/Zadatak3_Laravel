@@ -26,7 +26,7 @@ class AssignmentMentorController extends ApiController
 
         if(empty($mentor))
         {
-            return $this->showMessage('There is no data!!');
+            return $this->singleResponse('There is no data!!');
         }
         else
         {

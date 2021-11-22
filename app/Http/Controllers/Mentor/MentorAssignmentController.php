@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mentor;
 
 use App\Models\Group;
 use App\Models\Mentor;
+use App\Models\Review;
 use App\Models\Assignment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -34,7 +35,7 @@ class MentorAssignmentController extends ApiController
 
         if($assignments->isEmpty())
         {
-            return $this->showMessage('There is no data!!');
+            return $this->singleResponse('There is no data!!');
         }
         else
         {
@@ -88,7 +89,8 @@ class MentorAssignmentController extends ApiController
             'name' => 'string',
             'description' => 'string',
             'group_id' => 'integer|min:1',
-            'status' => 'string|in:' . Assignment::INACTIVE_ASSIGNMENT
+            'status' => 'string|in:' . Assignment::INACTIVE_ASSIGNMENT,
+            'finish_date' => 'date'
         ];
 
         $this->validate($request, $rules);
@@ -166,15 +168,14 @@ class MentorAssignmentController extends ApiController
     {
         $this->checkMentor($mentor, $assignment);
 
-        if($assignment->reviews->pluck('id')->isEmpty())
+        if(!empty($assignment->reviews->pluck('id')->first()))
         {
-            $assignment->delete();
-            return $this->showOne($assignment);
+            Review::where('assignment_id', '=', $assignment->id)->delete();
         }
-        else
-        {
-            return $this->errorResponse('You cannot delete assignment, because this assignment contains other values!!', 409);
-        }
+
+        $assignment->delete();
+        return $this->showOne($assignment);
+
     }
 
     protected function checkMentor(Mentor $mentor, Assignment $assignment)

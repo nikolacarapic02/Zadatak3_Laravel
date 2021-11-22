@@ -4,26 +4,25 @@ namespace App\Http\Controllers\User;
 
 use App\Models\User;
 use App\Models\Mentor;
+use App\Models\Review;
 use App\Mail\UserCreated;
+use App\Models\Assignment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
-use App\Http\Controllers\ApiController;
 use App\Transformers\UserTransformer;
+use App\Http\Controllers\ApiController;
 
 class UserController extends ApiController
 {
     public function __construct()
     {
-        $this->middleware('client.credentials')->only(['resend']);
-        $this->middleware('auth:api')->except(['verify', 'resend']);
-        $this->middleware('transform.input:'.UserTransformer::class)->only(['store', 'update']);
-        $this->middleware('can:admin-action')->only('index');
-        $this->middleware('can:view,user')->only('show');
+        $this->middleware('client.credentials')->only('resend');
+        $this->middleware('auth:api')->except('verify', 'resend');
+        $this->middleware('transform.input:'.UserTransformer::class)->only('store', 'update');
+        $this->middleware('can:admin-action')->only('index', 'update', 'destroy', 'changeRole');
         $this->middleware('can:create')->only('store');
-        $this->middleware('can:update,user')->only('update');
-        $this->middleware('can:delete,user')->only('destroy');
-        $this->middleware('can:admin-action')->only('changeRole');
+        $this->middleware('can:view,user')->only('show');
     }
 
     /**
@@ -37,7 +36,7 @@ class UserController extends ApiController
 
         if($users->isEmpty())
         {
-            return $this->showMessage('There is no data!!');
+            return $this->singleResponse('There is no data!!');
         }
         else
         {
@@ -174,23 +173,28 @@ class UserController extends ApiController
         if($user->role == 'mentor')
         {
             $mentor = Mentor::where('email', '=', $user->email)->first();
-            if($mentor->assignments->pluck('id')->isEmpty() && $mentor->reviews->pluck('id')->isEmpty() && $mentor->interns->pluck('id')->isEmpty())
+
+            $user->delete();
+            $mentor->groups()->sync([]);
+
+            if(!$mentor->assignments->isEmpty())
             {
-                $user->delete();
-                $mentor->groups()->sync([]);
-                $mentor->delete();
+                Assignment::where('mentor_id', '=', $mentor->id)->delete();
             }
-            else
+
+            if(!$mentor->reviews->isEmpty())
             {
-                return $this->errorResponse('You cannot delete user, because this user contains other values!!', 409);
+                Review::where('mentor_id', '=', $mentor->id)->delete();
             }
+
+            $mentor->delete();
         }
         else
         {
             $user->delete();
         }
 
-        return $this->showOne($user);
+        return $this->singleResponse('User deleted successfully', 200);
     }
 
     public function verify($token)

@@ -26,7 +26,7 @@ class GroupMentorController extends ApiController
 
         if($mentors->isEmpty())
         {
-            return $this->showMessage('There is no data!!');
+            return $this->singleResponse('There is no data!!');
         }
         else
         {

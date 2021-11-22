@@ -26,7 +26,7 @@ class ReviewAssignmentController extends ApiController
 
         if(empty($assignment))
         {
-            return $this->showMessage('There is no data!!');
+            return $this->singleResponse('There is no data!!');
         }
         else
         {

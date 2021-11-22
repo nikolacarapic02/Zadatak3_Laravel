@@ -26,7 +26,7 @@ class AssignmentInternController extends ApiController
 
         if($interns->isEmpty())
         {
-            return $this->showMessage('There is no data!!');
+            return $this->singleResponse('There is no data!!');
         }
         else
         {
