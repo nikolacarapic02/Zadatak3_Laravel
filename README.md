@@ -46,50 +46,50 @@ The next chapter will explain in detail the process of downloading and launching
 
 ### Users
 
-- Show all users
+- Show all users, role:admin
 
 ```http
 GET /users
 ```
-- Show one user
+- Show one user, role:admin, recruiter, mentor
 
 ```http
 GET /users/{id}
 ```
-- Show the logged in user
+- Show the logged in user, role:admin, recruiter, mentor
 
 ```http
 GET /users/me
 ```
-- Verifying user
+- Verifying user, role:admin, recruiter, mentor
 
 ```http
 GET /users/verify/{token}
 ```
-- Resend verification link to user
+- Resend verification link to user, role:admin, recruiter, mentor
 
 ```http
-GET /users/{user}/resend
+GET /users/{id}/resend
 ```
-- Create new user
+- Create new user, role:admin
 
 ```http
 POST /users
 ```
 
-- Update user
+- Update user, role:admin
 
 ```http
-PUT|PATCH /users/{id}
+PUT /users/{id}
 ```
 
-- Change user role
+- Change user role, role:admin
 
 ```http
-PUT /users/{user}/changerole
+PUT /users/{id}/changerole
 ```
 
-- Delete user
+- Delete user, role:admin
 
 ```http
 DELETE /users/{id}
@@ -97,84 +97,84 @@ DELETE /users/{id}
 
 ### Mentors
 
-- Show all mentors
+- Show all mentors, role:admin, recruiter
 
 ```http
 GET /mentors
 ```
-- Show one mentor
+- Show one mentor, role:admin, recruiter, mentor
 
 ```http
 GET /mentors/{id}
 ```
 
-- Show all assignments for this mentor
+- Show all assignments for this mentor, role:admin, recruiter, mentor
 
 ```http
 GET /mentors/{mentor_id}/assignments
 ```
 
-- Clone assignment to other group
+- Clone assignment to other group, role:admin, mentor
 
 ```http
 GET /mentors/{mentor_id}/assignments/{assignment_id}/groups/{groups_id}/clone
 ```
 
-- Show all groups for this mentor
+- Show all groups for this mentor, role:admin, recruiter, mentor
 
 ```http
 GET /mentors/{mentor_id}/groups
 ```
 
-- Show all interns for this mentor
+- Show all interns for this mentor, role:admin, recruiter, mentor
 
 ```http
 GET /mentors/{mentor_id}/interns
 ```
 
-- Show all reviews for this mentor
+- Show all reviews for this mentor, role:admin, recruiter, mentor
 
 ```http
 GET /mentors/{mentor_id}/reviews
 ```
 
-- Mentor create assignment
+- Mentor create assignment, role:admin, mentor
 
 ```http
 POST /mentors/{mentor_id}/assignments
 ```
 
-- Mentor create review for intern
+- Mentor create review for intern, role:admin, mentor
 
 ```http
 POST /mentors/{mentor_id}/interns/{intern_id}/reviews
 ```
 
-- Update mentor
+- Update mentor, role:admin, recruiter
 
 ```http
-PUT|PATCH /mentors/{id}
+PUT /mentors/{id}
 ```
 
-- Mentor update assignment
+- Mentor update assignment, role:admin, mentor
 
 ```http
-PUT|PATCH /mentors/{mentor_id}/assignments/{assignment_id}
+PUT /mentors/{mentor_id}/assignments/{assignment_id}
 ```
 
-- Mentor update review
+- Mentor update review, role:admin, mentor
 
 ```http
-PUT|PATCH /mentors/{mentor_id}/interns/{intern_id}/reviews/{review_id}
+PUT /mentors/{mentor_id}/interns/{intern_id}/reviews/{review_id}
 ```
 
-- Mentor delete assignment
+- Mentor delete assignment, role:admin, mentor
 
 ```http
 DELETE /mentors/{mentor_id}/assignments/{assignment_id}
 ```
 
-- Mentor delete review
+- Mentor delete review, role:admin, mentor
 
 ```http
 DELETE /mentors/{mentor_id}/interns/{intern_id}/reviews/{review_id}
@@ -182,3 +182,210 @@ DELETE /mentors/{mentor_id}/interns/{intern_id}/reviews/{review_id}
 
 ### Interns
 
+- Show all interns, role:admin, recruiter, mentor
+
+```http
+GET /interns
+```
+
+- Show one intern, role:admin, recruiter, mentor
+
+```http
+GET /interns/{id}
+```
+
+- Show all active assignments for this intern, role:admin, recruiter, mentor
+
+```http
+GET /interns/{intern_id}/assignments
+```
+
+- Show all mentors for this intern, role:admin, recruiter, mentor
+
+```http
+GET /interns/{intern_id}/mentors
+```
+
+- Show all groups for this intern, role:admin, recruiter, mentor
+
+```http
+GET /interns/{intern_id}/groups
+```
+
+- Show all reviews for this intern, role:admin, recruiter, mentor
+
+```http
+GET /interns/{intern_id}/reviews
+```
+
+- Create intern, role:admin, recruiter
+
+```http
+POST /interns
+```
+
+- Update intern, role:admin, recruiter
+
+```http
+PUT /interns/{id}
+```
+
+- Delete intern, role:admin, recruiter
+
+```http
+DELETE /interns/{id}
+```
+
+### Groups
+
+- Show all groups, role:admin, recruiter
+
+```http
+GET /groups
+```
+
+- Show one group, role:admin, recruiter, mentor
+
+```http
+GET /groups/{id}
+```
+
+- Show all mentors for this group, role:admin, recruiter, mentor
+
+```http
+GET /groups/{group_id}/mentors
+```
+
+- Show all interns for this group, role:admin, recruiter, mentor
+
+```http
+GET /groups/{group_id}/interns
+```
+
+- Show all assignments for this group, role:admin, recruiter, mentor
+
+```http
+GET /groups/{group_id}/assignments
+```
+
+- Create group, role:admin, recruiter
+
+```http
+POST /groups
+```
+
+- Update group, role:admin, recruiter
+
+```http
+PUT /groups/{id}
+```
+
+- Add mentor in gorup, role:admin, recruiter
+
+```http
+PUT /groups/{group_id}/addmentor
+```
+
+- Delete mentor from group, role:admin, recruiter
+
+```http
+PUT /groups/{group_id}/deletementor
+```
+
+- Activate assignment in group, role:admin, recruiter, mentor
+
+```http
+PUT /groups/{group_id}/assignments/{assignment_id}/activate
+```
+
+- Delete group, role:admin, recruiter
+
+```http
+DELETE /groups/{id}
+```
+
+### Assignments
+
+- Show all assignments, role:admin, recruiter
+
+```http
+GET /assignments
+```
+
+- Show one assignment, role:admin, recruiter, mentor
+
+```http
+GET /assignments/{id}
+```
+
+- Show all mentors for this assignments, role:admin, recruiter, mentor
+
+```http
+GET /assignments/{assignment_id}/mentors
+```
+
+- Show all interns for this assignments, role:admin, recruiter, mentor
+
+```http
+GET /assignments/{assignment_id}/interns
+```
+
+- Show all groups for this assignments, role:admin, recruiter, mentor
+
+```http
+GET /assignments/{assignment_id}/groups
+```
+
+- Show all reviews for this assignments, role:admin, recruiter, mentor
+
+```http
+GET /assignments/{assignment_id}/reviews
+```
+
+### Reviews
+
+- Show all reviews, role:admin, recruiter
+
+```http
+GET /reviews
+```
+
+- Show one reviews, role:admin, recruiter, mentor
+
+```http
+GET /reviews/{id}
+```
+
+- Show all mentors for this review, role:admin, recruiter, mentor
+
+```http
+GET /reviews/{review_id}/mentors
+```
+
+- Show all interns for this review, role:admin, recruiter, mentor
+
+```http
+GET /reviews/{review_id}/interns
+```
+
+- Show all assignments for this review, role:admin, recruiter, mentor
+
+```http
+GET /reviews/{review_id}/assignments
+```
+
+### Authentication
+
+- Authorize user
+
+```http
+POST /oauth/token
+```
+
+## WEB References
+
+- Home page
+
+```http
+GET /home
+```
