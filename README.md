@@ -7,59 +7,178 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## About Api
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This api was created in the PHP programming language, using the Laravel framework.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Api uses the OAuth2 authentication system, which is achieved by using the [Laravel Passport](https://laravel.com/docs/8.x/passport) package.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The next chapter will explain in detail the process of downloading and launching the application itself.
 
-## Learning Laravel
+## How to download and run the app?
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Git clone
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- In terminal access to your local server environment root directory or another folder where you want to make a clone.
 
-## Laravel Sponsors
+- Run
+```
+    git clone https://github.com/nikolacarapic02/Zadatak3_Laravel.git
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- Another way is to click on the code button on the github repository page and then click on the [Download Zip](https://github.com/nikolacarapic02/Zadatak3_Laravel/archive/refs/heads/master.zip) option in the menu that appears.
 
-### Premium Partners
+### Usage
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+- The first thing you need to do is access the file where the application is located via the terminal.
 
-## Contributing
+- If you do not have Laravel installed on your computer, you can do so via this [link](https://laravel.com/docs/4.2), where the whole procedure is explained in detail.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Then you need to create a database and name it will be the same as it did in the laravel application in the: .evn.example file, item DB_DATABASE.
 
-## Code of Conduct
+- After that, in the terminal it is necessary to write the command ```php artisan migrate --seed```, which will create all the necessary tables in the database and fill them with random data.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Then you need to use the laravel passport to generate a token to go through the authentication process.
 
-## Security Vulnerabilities
+- Finally in application launch environment, use one of the routes listed in the [Api References](#api-references) or [Web References](#web-references) section.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## API References
 
-## License
+### Users
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Show all users
+
+```http
+GET /users
+```
+- Show one user
+
+```http
+GET /users/{id}
+```
+- Show the logged in user
+
+```http
+GET /users/me
+```
+- Verifying user
+
+```http
+GET /users/verify/{token}
+```
+- Resend verification link to user
+
+```http
+GET /users/{user}/resend
+```
+- Create new user
+
+```http
+POST /users
+```
+
+- Update user
+
+```http
+PUT|PATCH /users/{id}
+```
+
+- Change user role
+
+```http
+PUT /users/{user}/changerole
+```
+
+- Delete user
+
+```http
+DELETE /users/{id}
+```
+
+### Mentors
+
+- Show all mentors
+
+```http
+GET /mentors
+```
+- Show one mentor
+
+```http
+GET /mentors/{id}
+```
+
+- Show all assignments for this mentor
+
+```http
+GET /mentors/{mentor_id}/assignments
+```
+
+- Clone assignment to other group
+
+```http
+GET /mentors/{mentor_id}/assignments/{assignment_id}/groups/{groups_id}/clone
+```
+
+- Show all groups for this mentor
+
+```http
+GET /mentors/{mentor_id}/groups
+```
+
+- Show all interns for this mentor
+
+```http
+GET /mentors/{mentor_id}/interns
+```
+
+- Show all reviews for this mentor
+
+```http
+GET /mentors/{mentor_id}/reviews
+```
+
+- Mentor create assignment
+
+```http
+POST /mentors/{mentor_id}/assignments
+```
+
+- Mentor create review for intern
+
+```http
+POST /mentors/{mentor_id}/interns/{intern_id}/reviews
+```
+
+- Update mentor
+
+```http
+PUT|PATCH /mentors/{id}
+```
+
+- Mentor update assignment
+
+```http
+PUT|PATCH /mentors/{mentor_id}/assignments/{assignment_id}
+```
+
+- Mentor update review
+
+```http
+PUT|PATCH /mentors/{mentor_id}/interns/{intern_id}/reviews/{review_id}
+```
+
+- Mentor delete assignment
+
+```http
+DELETE /mentors/{mentor_id}/assignments/{assignment_id}
+```
+
+- Mentor delete review
+
+```http
+DELETE /mentors/{mentor_id}/interns/{intern_id}/reviews/{review_id}
+```
+
+### Interns
+

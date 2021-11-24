@@ -9,6 +9,7 @@ use App\Models\Assignment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
+use App\Models\User;
 use App\Transformers\AssignmentTransformer;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -199,9 +200,11 @@ class MentorAssignmentController extends ApiController
 
         $group = Group::where('id', '=', $group_id)->firstOrFail();
 
-        if($group->mentors()->pluck('id')->contains($mentor_id))
+        $user = auth('api')->user();
+
+        if($group->mentors()->pluck('id')->contains($mentor_id) || $user->role == User::ADMIN_USER)
         {
-            if($group->assignments()->pluck('description')->contains($assignment->description))
+            if($group->assignments()->pluck('id')->contains($assignment->id))
             {
                 return $this->errorResponse('The assignment is already in the selected group!!',409);
             }
