@@ -156,7 +156,7 @@ class GroupController extends ApiController
             return $this->errorResponse('You need to specify mentor_id!!', 409);
         }
 
-        return $this->showMessage('Mentor with id ' . $request->mentor_id . ' was successfully added to the group.');
+        return $this->singleResponse('Mentor with id ' . $request->mentor_id . ' was successfully added to the group.',200);
     }
 
     public function deleteMentor(Request $request, $group_id)
@@ -190,6 +190,6 @@ class GroupController extends ApiController
             return $this->errorResponse('You need to specify mentor_id!!', 409);
         }
 
-        return $this->showMessage('Mentor with id ' . $request->mentor_id . ' was successfully deleted from the group.');
+        return $this->singleResponse('Mentor with id ' . $request->mentor_id . ' was successfully deleted from the group.',200);
     }
 }

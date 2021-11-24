@@ -204,7 +204,7 @@ class MentorAssignmentController extends ApiController
 
         if($group->mentors()->pluck('id')->contains($mentor_id) || $user->role == User::ADMIN_USER)
         {
-            if($group->assignments()->pluck('id')->contains($assignment->id))
+            if($group->assignments()->pluck('description')->contains($assignment->description))
             {
                 return $this->errorResponse('The assignment is already in the selected group!!',409);
             }

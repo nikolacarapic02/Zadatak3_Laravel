@@ -150,7 +150,7 @@ POST /mentors/{mentor_id}/assignments
 POST /mentors/{mentor_id}/interns/{intern_id}/reviews
 ```
 
-- Update mentor, role:admin, recruiter
+- Update mentor, role:admin, recruiter, mentor
 
 ```http
 PUT /mentors/{id}
