@@ -7,6 +7,7 @@ use App\Models\Group;
 use App\Models\Mentor;
 use Tests\TestCase;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
@@ -103,7 +104,7 @@ class GroupControllerTest extends TestCase
         ]);
 
         $response = $this->put("/groups/{$group->id}/assignments/{$assignment->id}/activate", [
-            'finishDate' => '2021-11-25'
+            'finishDate' => Carbon::now()->addDays(rand(1,10))
         ]);
 
         $response->assertStatus(200);
